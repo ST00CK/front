@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const chatPages = () => {
+const ChatPage = () => {
   return (
     <View>
       <Text>chatPages</Text>
@@ -9,4 +9,4 @@ const chatPages = () => {
   )
 }
 
-export default chatPages
+export default ChatPage

@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const loginPage = () => {
+const LoginPage = () => {
   return (
     <View>
       <Text>loginPage</Text>
@@ -9,4 +9,4 @@ const loginPage = () => {
   )
 }
 
-export default loginPage
+export default LoginPage;
