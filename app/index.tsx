@@ -5,10 +5,14 @@ import { useRouter } from 'expo-router';
 const LoginPage = () => {
     const router = useRouter();
 
+    const handleLogin = () => {
+        router.push('/main');
+    };
+
     return (
         <View>
             <Text>Login Page</Text>
-            <Button title="Go to Main" onPress={() => router.push('/main')} />
+            <Button title="Go to Main" onPress={handleLogin} />
         </View>
     );
 };
