@@ -1,39 +1,49 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const Layout = () => {
+    return (
+        <Tabs
+            screenOptions={{
+                tabBarStyle: {
+                    backgroundColor: '#f8f9fa',
+                },
+                tabBarActiveTintColor: '#007bff',
+                tabBarInactiveTintColor: '#6c757d',
+            }}
+        >
+            <Tabs.Screen
+                name="index"
+                options={{
+                    tabBarLabel: 'Home',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="home-outline" size={size} color={color} />
+                    ),
+                }}
+            />
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+            <Tabs.Screen
+                name="(tabs)/friendListPage/index"
+                options={{
+                    tabBarLabel: '메인',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="apps-outline" size={size} color={color} />
+                    ),
+                }}
+            />
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+            <Tabs.Screen
+                name="(tabs)/chatAddPage/index"
+                options={{
+                    tabBarLabel: '채팅',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="chatbubble-outline" size={size} color={color} />
+                    ),
+                }}
+            />
+        </Tabs>
+    );
+};
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
-}
+export default Layout;
