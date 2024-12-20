@@ -1,13 +1,19 @@
-import { Tabs } from 'expo-router';
+import { Tabs, useRootNavigationState } from 'expo-router';
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
 
 const Layout = () => {
+    const state = useRootNavigationState();
+
+    const currentRouteName = state.routes && state.routes.length > 0 
+        ? state.routes[state.index]?.name 
+        : null;
+
     return (
         <Tabs
             screenOptions={{
                 tabBarStyle: {
                     backgroundColor: '#f8f9fa',
+                    display: currentRouteName === 'loginPage' ? 'none' : 'flex',
                 },
                 tabBarActiveTintColor: '#007bff',
                 tabBarInactiveTintColor: '#6c757d',
@@ -16,30 +22,20 @@ const Layout = () => {
             <Tabs.Screen
                 name="index"
                 options={{
-                    tabBarLabel: 'Home',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="home-outline" size={size} color={color} />
-                    ),
+                    tabBarStyle: { display: 'none' },
+                    headerShown: false,
                 }}
             />
-
             <Tabs.Screen
-                name="(tabs)/friendListPage/index"
+                name="friendListPage"
                 options={{
-                    tabBarLabel: '메인',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="apps-outline" size={size} color={color} />
-                    ),
+                    tabBarLabel: 'Main',
                 }}
             />
-
             <Tabs.Screen
-                name="(tabs)/chatAddPage/index"
+                name="chatListPage"
                 options={{
-                    tabBarLabel: '채팅',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="chatbubble-outline" size={size} color={color} />
-                    ),
+                    tabBarLabel: 'Chat',
                 }}
             />
         </Tabs>
