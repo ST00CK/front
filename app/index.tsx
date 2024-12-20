@@ -6,7 +6,7 @@ const LoginPage = () => {
     const router = useRouter();
 
     const handleLogin = () => {
-        router.push('/main');
+        router.push('/friendListPage');
     };
 
     return (
