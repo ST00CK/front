@@ -1,19 +1,13 @@
-import { Tabs, useRootNavigationState } from 'expo-router';
+import { Tabs } from 'expo-router';
 import React from 'react';
 
 const Layout = () => {
-    const state = useRootNavigationState();
-
-    const currentRouteName = state.routes && state.routes.length > 0 
-        ? state.routes[state.index]?.name 
-        : null;
 
     return (
         <Tabs
             screenOptions={{
                 tabBarStyle: {
                     backgroundColor: '#f8f9fa',
-                    display: currentRouteName === 'loginPage' ? 'none' : 'flex',
                 },
                 tabBarActiveTintColor: '#007bff',
                 tabBarInactiveTintColor: '#6c757d',
@@ -22,20 +16,26 @@ const Layout = () => {
             <Tabs.Screen
                 name="index"
                 options={{
-                    tabBarStyle: { display: 'none' },
+                    tabBarStyle: { display: 'none'},
                     headerShown: false,
+                    // tabBarButton: () => null,
+                    // tabBarItemStyle: { flex: 0 },
                 }}
             />
             <Tabs.Screen
                 name="friendListPage"
                 options={{
                     tabBarLabel: 'Main',
+                    headerShown: false,
+                    tabBarItemStyle: { flex: 1 },
                 }}
             />
             <Tabs.Screen
                 name="chatListPage"
                 options={{
                     tabBarLabel: 'Chat',
+                    headerShown: false,
+                    tabBarItemStyle: { flex: 1 },
                 }}
             />
         </Tabs>
