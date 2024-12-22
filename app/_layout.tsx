@@ -23,7 +23,7 @@ const Layout = () => {
                 }}
             />
             <Tabs.Screen
-                name="friendListPage"
+                name="FriendListPage"
                 options={{
                     tabBarLabel: 'Main',
                     headerShown: false,
@@ -31,11 +31,43 @@ const Layout = () => {
                 }}
             />
             <Tabs.Screen
-                name="chatListPage"
+                name="ChatListPage"
                 options={{
                     tabBarLabel: 'Chat',
                     headerShown: false,
                     tabBarItemStyle: { flex: 1 },
+                }}
+            />
+            <Tabs.Screen
+                name="ChatAddPage"
+                options={{
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
+            <Tabs.Screen
+                name="ChatRoomPage"
+                options={{
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
+            <Tabs.Screen
+                name="MyPage"
+                options={{
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
+            <Tabs.Screen
+                name="SignUpPage"
+                options={{
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
                 }}
             />
         </Tabs>

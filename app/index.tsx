@@ -6,7 +6,7 @@ const LoginPage = () => {
     const navigation = useNavigation();
 
     const navigateToFriendList = () => {
-        navigation.navigate('friendListPage');
+        navigation.navigate('FriendListPage');
     };
 
     return (
