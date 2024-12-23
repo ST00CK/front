@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MyPageButton from '../components/stoock/friendlist/MyPageButton';
+import MyPageButton from '../components/stoock/Friendlist/MyPageButton';
 
 const FriendListPage = () => {
     const navigation = useNavigation();
