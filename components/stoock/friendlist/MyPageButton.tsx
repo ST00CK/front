@@ -1,7 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, GestureResponderEvent  } from 'react-native';
 
-const MyPageButton = ({ onPress }) => {
+interface MyPageButtonProps {
+    onPress: (event: GestureResponderEvent) => void;
+}
+
+const MyPageButton: React.FC<MyPageButtonProps> = ({ onPress }) => {
     return (
         <TouchableOpacity style={styles.button} onPress={onPress}>
             <Text style={styles.buttonText}>My Page</Text>
