@@ -1,8 +1,8 @@
-// FriendListPage.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MyPageButton from '../components/stoock/friendlist/MyPageButton';
+import styles from '../styles/FriendListPageStyles';
 
 const FriendListPage = () => {
     const navigation = useNavigation();
@@ -18,16 +18,5 @@ const FriendListPage = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 24,
-    },
-});
 
 export default FriendListPage;
