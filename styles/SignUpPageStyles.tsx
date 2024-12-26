@@ -11,14 +11,19 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 24,
-        position: 'absolute',
-        top: '30%',
+        marginBottom: 20,
+    },
+    inputContainer: {
+        marginTop: '40%',
+        width: '80%',
+        alignItems: 'center',
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 20,
         width: '70%',
+        paddingHorizontal: 20,
     },
     image: {
         position: 'absolute',
@@ -26,7 +31,8 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     input: {
-        marginVertical: 10,
+        marginVertical: 15,
+        width: '70%',
     },
     button: {
         margin: 10,

@@ -18,20 +18,22 @@ const LoginPage = () => {
         navigation.navigate('FriendListPage');
     };
 
-    const
+    const navigateToSighUp = () => {
+        navigation.navigate('SignUpPage');
+    };
 
     return (
         <View style={styles.container}>
-            <Image source={StoockImage} />
+            <Image source={StoockImage} style={styles.image} />
             <Text style={styles.text}>Login</Text>
-            <Button title="Go to Friend List" onPress={navigateToFriendList} />
-            <Input placeholder="Email"/>
-            <Input placeholder="Password"/>
+            <Input placeholder="Email" style={styles.input} />
+            <Input placeholder="Password" style={styles.input} />
             <View style={styles.buttonContainer}>
-                <ShortButton text='Login' onClick={navigateToFriendList} />
-                <ShortButton text='Sign Up' onClick={navigateToFriendList} />
+                <ShortButton text='Login' onClick={navigateToFriendList} style={styles.button} />
+                <ShortButton text='Sign Up' onClick={navigateToSighUp} style={styles.button} />
             </View>
             <Image source={kakaoImage} />
+            <Button title="Go to Friend List" onPress={navigateToFriendList} />
         </View>
     );
 };
