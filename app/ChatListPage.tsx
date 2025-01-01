@@ -1,23 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
+import ChatRoom from '../components/stoock/ChatList/ChatRoom';
+import ChatLogo from '../components/stoock/ChatList/ChatLogo';
+import styles from '../styles/ChatListPageStyles';
 
 const ChatListPage = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Chat Tab Content</Text>
+            <View style={styles.logoContainer}>
+                <ChatLogo />
+            </View>
+            <View style={styles.chatRoomContainer}>
+                <ChatRoom />
+            </View>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 24,
-    },
-});
 
 export default ChatListPage;
