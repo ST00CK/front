@@ -65,6 +65,7 @@ const Layout = () => {
             <Tabs.Screen
                 name="SignUpPage"
                 options={{
+                    tabBarStyle: { display: 'none'},
                     headerShown: false,
                     tabBarButton: () => null,
                     tabBarItemStyle: { flex: 0 },

@@ -1,31 +1,41 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import { useNavigation } from 'expo-router';
+import { View, Text, Button, Image } from 'react-native';
+import { useNavigation, NavigationProp } from 'expo-router';
+import ShortButton from '../components/stoock/Common/ShortButton';
+import styles from '../styles/LoginPageStyles';
+import Input from './../components/stoock/Common/Input';
+import StoockImage from '../assets/images/STOOCK!.png';
+import kakaoImage from '../assets/images/kakao.png';
+
+type RootStackParamList = {
+    FriendListPage: undefined;
+};
 
 const LoginPage = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const navigateToFriendList = () => {
         navigation.navigate('FriendListPage');
     };
 
+    const navigateToSighUp = () => {
+        navigation.navigate('SignUpPage');
+    };
+
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Home Tab Content</Text>
+            <Image source={StoockImage} style={styles.image} />
+            <Text style={styles.text}>Login</Text>
+            <Input placeholder="Email" style={styles.input} />
+            <Input placeholder="Password" style={styles.input} />
+            <View style={styles.buttonContainer}>
+                <ShortButton text='Login' onClick={navigateToFriendList} style={styles.button} />
+                <ShortButton text='Sign Up' onClick={navigateToSighUp} style={styles.button} />
+            </View>
+            <Image source={kakaoImage} />
             <Button title="Go to Friend List" onPress={navigateToFriendList} />
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 24,
-    },
-});
 
 export default LoginPage;
