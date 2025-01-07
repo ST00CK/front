@@ -11,14 +11,14 @@ const ChatRoom = () => {
         { id: 4, name: 'Robert Downey Jr.', message: 'Hi', time: '10:03 AM', imageUrl: 'https://via.placeholder.com/50' },
     ];
 
-    const handlePress = () => {
-        navigation.navigate('ChatRoomPage');
+    const handlePress = (name: string) => {
+        navigation.navigate('ChatRoomPage', { name });
     };
 
     return (
         <ScrollView style={styles.container}>
             {messages.map((msg) => (
-                <TouchableOpacity key={msg.id} style={styles.messageContainer} onPress={handlePress}>
+                <TouchableOpacity key={msg.id} style={styles.messageContainer} onPress={() => handlePress(msg.name)}>
                     <Image source={{ uri: msg.imageUrl }} style={styles.profileImage} />
                     <View style={styles.messageContent}>
                         <Text style={styles.name}>{msg.name}</Text>
@@ -34,17 +34,12 @@ const ChatRoom = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '90%',
-        alignSelf: 'center',
         padding: 10,
     },
     messageContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: 'gray',
-        paddingBottom: 10,
     },
     profileImage: {
         width: 50,

@@ -1,9 +1,20 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import Chat from '../components/stoock/ChatRoom/Chat';
 import ChatInput from '../components/stoock/ChatRoom/ChatInput';
+import styles from '../styles/ChatRoomPageStyles';
+
+type RootStackParamList = {
+    ChatRoomPage: { name: string };
+};
+
+type ChatRoomPageRouteProp = RouteProp<RootStackParamList, 'ChatRoomPage'>;
 
 const ChatRoomPage = () => {
+    const route = useRoute<ChatRoomPageRouteProp>();
+    const { name } = route.params;
+
     const [messages, setMessages] = useState([
         {
             id: 1,
@@ -51,6 +62,9 @@ const ChatRoomPage = () => {
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
+            <View style={styles.header}>
+                <Text style={styles.headerText}>{name}</Text>
+            </View>
             <ScrollView style={styles.chatContainer}>
                 {messages.map((msg) => (
                     <Chat
@@ -59,6 +73,7 @@ const ChatRoomPage = () => {
                         name={msg.name}
                         message={msg.message}
                         time={msg.time}
+                        isUserMessage={msg.name === 'You'}
                     />
                 ))}
             </ScrollView>
@@ -66,15 +81,5 @@ const ChatRoomPage = () => {
         </KeyboardAvoidingView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    chatContainer: {
-        flex: 1,
-        padding: 10,
-    },
-});
 
 export default ChatRoomPage;

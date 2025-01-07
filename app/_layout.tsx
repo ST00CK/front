@@ -71,6 +71,15 @@ const Layout = () => {
                     tabBarItemStyle: { flex: 0 },
                 }}
             />
+            <Tabs.Screen
+                name="AppNavigator"
+                options={{
+                    tabBarStyle: { display: 'none'},
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
         </Tabs>
     );
 };
