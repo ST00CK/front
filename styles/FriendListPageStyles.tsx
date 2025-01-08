@@ -1,29 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        width: '100%',
-        paddingHorizontal: 10,
-    },
     container: {
         flex: 1,
-        alignItems: 'flex-start',
         padding: 10,
     },
-    largeProfile: {
-        position: 'absolute',
-        top: 10,
-        left: 10,
-    },
-    smallProfilesContainer: {
-        marginTop: 120,
-        width: '100%',
-    },
-    smallProfile: {
-        marginBottom: 10,
+    header: {
+        marginBottom: 20,
     },
     inputContainer: {
         width: '90%',
@@ -36,6 +19,19 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: 'gray',
         paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    searchContainer: {
+        marginBottom: 20,
+    },
+    searchInput: {
+        flex: 1,
+    },
+    smallProfilesContainer: {
+        marginTop: 120,
+        width: '100%',
+    },
+    smallProfile: {
         marginBottom: 10,
     },
 });
