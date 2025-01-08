@@ -1,18 +1,20 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, TextInputProps } from 'react-native';
+import { View, TextInput, StyleSheet, TextInputProps, ViewStyle, TextStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface SearchIconProps extends TextInputProps {
     placeholder: string;
     onChangeText: (text: string) => void;
     value: string;
+    containerStyle?: ViewStyle;
+    inputStyle?: TextStyle;
 }
 
-const SearchIcon: React.FC<SearchIconProps> = ({ placeholder, onChangeText, value, style, ...props }) => {
+const SearchIcon: React.FC<SearchIconProps> = ({ placeholder, onChangeText, value, containerStyle, inputStyle, ...props }) => {
     return (
-        <View style={[styles.container, style]}>
+        <View style={[styles.container, containerStyle]}>
             <TextInput
-                style={styles.input}
+                style={[styles.input, inputStyle]}
                 placeholder={placeholder}
                 onChangeText={onChangeText}
                 value={value}
