@@ -10,6 +10,28 @@ const styles = StyleSheet.create({
         top: 10,
         left: 10,
     },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: 10,
+        marginTop: 10,
+    },
+    inputContainer: {
+        width: '100%',
+        paddingHorizontal: 10,
+        marginTop: 10,
+    },
+    input: {
+        width: '100%',
+        height: 40,
+        borderBottomWidth: 1,
+        borderBottomColor: 'gray',
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        marginTop: 10,
+    },
     chatRoomContainer: {
         marginTop: 70,
     },

@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
     },
     userMessageBubble: {
         alignSelf: 'flex-end',
+        marginRight: 10,
     },
     message: {
         color: '#1D00AC',

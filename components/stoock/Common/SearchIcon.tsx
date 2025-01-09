@@ -1,46 +1,28 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, TextInputProps, ViewStyle, TextStyle } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-interface SearchIconProps extends TextInputProps {
-    placeholder: string;
-    onChangeText: (text: string) => void;
-    value: string;
-    containerStyle?: ViewStyle;
-    inputStyle?: TextStyle;
+interface SearchIconProps {
+    onPress: () => void;
 }
 
-const SearchIcon: React.FC<SearchIconProps> = ({ placeholder, onChangeText, value, containerStyle, inputStyle, ...props }) => {
+const SearchIcon: React.FC<SearchIconProps> = ({ onPress }) => {
     return (
-        <View style={[styles.container, containerStyle]}>
-            <TextInput
-                style={[styles.input, inputStyle]}
-                placeholder={placeholder}
-                onChangeText={onChangeText}
-                value={value}
-                {...props}
-            />
-            <Ionicons name="search" size={24} color="black" style={styles.icon} />
-        </View>
+        <TouchableOpacity style={styles.searchButton} onPress={onPress}>
+            <Text style={styles.searchText}>🔍</Text>
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
+    searchButton: {
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#d3d3d3',
-        borderRadius: 50,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        margin: 5,
-        width: '70%',
-    },
-    input: {
-        flex: 1,
-    },
-    icon: {
         marginLeft: 10,
+    },
+    searchText: {
+        fontSize: 20,
     },
 });
 

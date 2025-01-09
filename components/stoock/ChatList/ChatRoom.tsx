@@ -2,14 +2,13 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const ChatRoom = () => {
+interface ChatRoomProps {
+    name: string;
+    messages: { id: number; name: string; message: string; time: string; imageUrl: string }[];
+}
+
+const ChatRoom: React.FC<ChatRoomProps> = ({ name, messages }) => {
     const navigation = useNavigation();
-    const messages = [
-        { id: 1, name: 'Ryan Reynolds', message: 'Hi', time: '10:00 AM', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 2, name: 'Chris Evans', message: 'Hi', time: '10:01 AM', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 3, name: 'Scarlett Johansson', message: 'Hi', time: '10:02 AM', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 4, name: 'Robert Downey Jr.', message: 'Hi', time: '10:03 AM', imageUrl: 'https://via.placeholder.com/50' },
-    ];
 
     const handlePress = (name: string) => {
         navigation.navigate('ChatRoomPage', { name });
@@ -34,35 +33,31 @@ const ChatRoom = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
     },
     messageContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
+        padding: 10,
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
-        paddingBottom: 10,
+        borderBottomColor: '#ccc',
     },
     profileImage: {
         width: 50,
         height: 50,
         borderRadius: 25,
-        marginRight: 10,
     },
     messageContent: {
         flex: 1,
+        marginLeft: 10,
     },
     name: {
         fontWeight: 'bold',
-        marginBottom: 5,
     },
     message: {
-        color: 'gray',
+        color: '#555',
     },
     time: {
-        marginLeft: 10,
-        color: 'gray',
+        alignSelf: 'flex-start',
+        color: '#999',
     },
 });
 
