@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         left: 10,
     },
     smallProfilesContainer: {
-        marginTop: 60,
+        marginTop: 100,
         width: '100%',
     },
     smallProfile: {

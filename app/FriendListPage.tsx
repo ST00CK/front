@@ -67,7 +67,7 @@ const FriendListPage = () => {
                     />
                 </Animated.View>
             )}
-            <ScrollView style={styles.smallProfilesContainer}>
+            <Animated.ScrollView style={[styles.smallProfilesContainer, { transform: [{ translateY: slideDown }] }]}>
                 {filteredProfiles.map(profile => (
                     <Profile
                         key={profile.id}
@@ -78,7 +78,7 @@ const FriendListPage = () => {
                         style={styles.smallProfile}
                     />
                 ))}
-            </ScrollView>
+            </Animated.ScrollView>
         </View>
     );
 };

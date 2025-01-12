@@ -19,28 +19,35 @@ const ChatRoomPage = () => {
     const [messages, setMessages] = useState([
         {
             id: 1,
-            profileImage: 'https://via.placeholder.com/40',
+            profileImage: 'https://via.placeholder.com/50',
             name: 'Ryan Reynolds',
             message: 'Hello!',
             time: '10:00 AM',
         },
         {
             id: 2,
-            profileImage: 'https://via.placeholder.com/40',
+            profileImage: 'https://via.placeholder.com/50',
             name: 'Chris Evans',
             message: 'Hi there!',
             time: '10:01 AM',
         },
         {
             id: 3,
-            profileImage: 'https://via.placeholder.com/40',
+            profileImage: 'https://via.placeholder.com/50',
             name: 'Scarlett Johansson',
             message: 'How are you?',
             time: '10:02 AM',
         },
         {
             id: 4,
-            profileImage: 'https://via.placeholder.com/40',
+            profileImage: 'https://via.placeholder.com/50',
+            name: 'Robert Downey Jr.',
+            message: 'Good morning!',
+            time: '10:03 AM',
+        },
+        {
+            id: 5,
+            profileImage: 'https://via.placeholder.com/50',
             name: 'Robert Downey Jr.',
             message: 'Good morning!',
             time: '10:03 AM',
@@ -75,7 +82,7 @@ const ChatRoomPage = () => {
             profileImage: 'https://via.placeholder.com/40',
             name: 'You',
             message: message,
-            time: new Date().toLocaleTimeString(),
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
         };
         setMessages([...messages, newMessage]);
         setFilteredMessages([...messages, newMessage]);
@@ -109,16 +116,19 @@ const ChatRoomPage = () => {
                 )}
             </View>
             <ScrollView style={styles.messagesContainer}>
-                {filteredMessages.map(msg => (
-                    <Chat
-                        key={msg.id}
-                        profileImage={msg.profileImage}
-                        name={msg.name}
-                        message={msg.message}
-                        time={msg.time}
-                        isUserMessage={msg.name === 'You'}
-                    />
-                ))}
+                {filteredMessages.map((msg, index) => {
+                    const showProfile = index === 0 || filteredMessages[index - 1].name !== msg.name;
+                    return (
+                        <Chat
+                            key={msg.id}
+                            profileImage={showProfile ? msg.profileImage : ''}
+                            name={showProfile ? msg.name : ''}
+                            message={msg.message}
+                            time={msg.time}
+                            isUserMessage={msg.name === 'You'}
+                        />
+                    );
+                })}
             </ScrollView>
             <ChatInput onSend={handleSend} />
         </KeyboardAvoidingView>

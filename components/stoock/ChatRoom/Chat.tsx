@@ -15,10 +15,13 @@ const Chat: React.FC<ChatProps> = ({ profileImage, name, message, time, isUserMe
             {!isUserMessage && <Image source={{ uri: profileImage }} style={styles.profileImage} />}
             <View style={[styles.messageContainer, isUserMessage && styles.userMessageContainer]}>
                 {!isUserMessage && <Text style={styles.name}>{name}</Text>}
-                <View style={[styles.messageBubble, isUserMessage && styles.userMessageBubble]}>
-                    <Text style={styles.message}>{message}</Text>
+                <View style={styles.messageRow}>
+                    {isUserMessage && <Text style={[styles.time, styles.userTime]}>{time}</Text>}
+                    <View style={[styles.messageBubble, isUserMessage && styles.userMessageBubble]}>
+                        <Text style={styles.message}>{message}</Text>
+                    </View>
+                    {!isUserMessage && <Text style={[styles.time, styles.otherTime]}>{time}</Text>}
                 </View>
-                <Text style={styles.time}>{time}</Text>
             </View>
         </View>
     );
@@ -49,6 +52,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
     },
+    messageRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     messageBubble: {
         paddingVertical: 5,
         paddingHorizontal: 10,
@@ -61,15 +68,21 @@ const styles = StyleSheet.create({
     },
     userMessageBubble: {
         alignSelf: 'flex-end',
-        marginRight: 10,
     },
     message: {
         color: '#1D00AC',
-        marginBottom: 5,
     },
     time: {
         color: 'gray',
         fontSize: 12,
+        marginHorizontal: 5,
+        marginBottom: 5,
+    },
+    userTime: {
+        alignSelf: 'flex-end',
+    },
+    otherTime: {
+        alignSelf: 'flex-end',
     },
 });
 

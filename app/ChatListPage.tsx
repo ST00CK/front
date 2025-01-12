@@ -55,9 +55,9 @@ const ChatListPage = () => {
                     />
                 </Animated.View>
             )}
-            <ScrollView style={styles.chatRoomContainer}>
+            <Animated.ScrollView style={[styles.chatRoomContainer,{ transform: [{ translateY: slideDown }] }]}>
                 <ChatRoom name="Chat Room" messages={filteredMessages} />
-            </ScrollView>
+            </Animated.ScrollView>
         </View>
     );
 };
