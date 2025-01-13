@@ -7,20 +7,29 @@ interface ChatProps {
     message: string;
     time: string;
     isUserMessage?: boolean;
+    showProfileImage: boolean;
+    showName: boolean;
+    showTime: boolean;
 }
 
-const Chat: React.FC<ChatProps> = ({ profileImage, name, message, time, isUserMessage }) => {
+const Chat: React.FC<ChatProps> = ({ profileImage, name, message, time, isUserMessage, showProfileImage, showName, showTime }) => {
+    const formattedTime = new Date(time).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true });
+
     return (
         <View style={[styles.container, isUserMessage && styles.userContainer]}>
-            {!isUserMessage && <Image source={{ uri: profileImage }} style={styles.profileImage} />}
+            {!isUserMessage && (
+                <View style={styles.profileImageContainer}>
+                    {showProfileImage && <Image source={{ uri: profileImage }} style={styles.profileImage} />}
+                </View>
+            )}
             <View style={[styles.messageContainer, isUserMessage && styles.userMessageContainer]}>
-                {!isUserMessage && <Text style={styles.name}>{name}</Text>}
+                {showName && !isUserMessage && <Text style={styles.name}>{name}</Text>}
                 <View style={styles.messageRow}>
-                    {isUserMessage && <Text style={[styles.time, styles.userTime]}>{time}</Text>}
+                    {isUserMessage && showTime && <Text style={[styles.time, styles.userTime]}>{formattedTime}</Text>}
                     <View style={[styles.messageBubble, isUserMessage && styles.userMessageBubble]}>
                         <Text style={styles.message}>{message}</Text>
                     </View>
-                    {!isUserMessage && <Text style={[styles.time, styles.otherTime]}>{time}</Text>}
+                    {!isUserMessage && showTime && <Text style={styles.time}>{formattedTime}</Text>}
                 </View>
             </View>
         </View>
@@ -31,38 +40,40 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        marginBottom: 10,
+        marginBottom: 2,
     },
     userContainer: {
         justifyContent: 'flex-end',
+        marginRight: 10,
+    },
+    profileImageContainer: {
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     profileImage: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        marginRight: 10,
     },
     messageContainer: {
-        flex: 1,
+        maxWidth: '80%',
     },
     userMessageContainer: {
         alignItems: 'flex-end',
-    },
-    name: {
-        fontWeight: 'bold',
-        marginBottom: 5,
     },
     messageRow: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     messageBubble: {
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderRadius: 15,
         backgroundColor: '#E3E1F6',
+        borderRadius: 15,
         borderWidth: 1,
         borderColor: '#E3E1F6',
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         marginBottom: 5,
         alignSelf: 'flex-start',
     },
@@ -76,13 +87,12 @@ const styles = StyleSheet.create({
         color: 'gray',
         fontSize: 12,
         marginHorizontal: 5,
-        marginBottom: 5,
     },
     userTime: {
-        alignSelf: 'flex-end',
+        marginRight: 10,
     },
-    otherTime: {
-        alignSelf: 'flex-end',
+    name: {
+        fontWeight: 'bold',
     },
 });
 

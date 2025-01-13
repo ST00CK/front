@@ -22,35 +22,40 @@ const ChatRoomPage = () => {
             profileImage: 'https://via.placeholder.com/50',
             name: 'Ryan Reynolds',
             message: 'Hello!',
-            time: '10:00 AM',
+            time: '2023-10-01T10:00:00',
+            isUserMessage: false,
         },
         {
             id: 2,
             profileImage: 'https://via.placeholder.com/50',
             name: 'Chris Evans',
             message: 'Hi there!',
-            time: '10:01 AM',
+            time: '2023-10-01T10:01:00',
+            isUserMessage: false,
         },
         {
             id: 3,
             profileImage: 'https://via.placeholder.com/50',
             name: 'Scarlett Johansson',
             message: 'How are you?',
-            time: '10:02 AM',
+            time: '2023-10-01T10:02:00',
+            isUserMessage: false,
         },
         {
             id: 4,
             profileImage: 'https://via.placeholder.com/50',
             name: 'Robert Downey Jr.',
             message: 'Good morning!',
-            time: '10:03 AM',
+            time: '2023-10-01T10:03:00',
+            isUserMessage: false,
         },
         {
             id: 5,
             profileImage: 'https://via.placeholder.com/50',
             name: 'Robert Downey Jr.',
             message: 'Good morning!',
-            time: '10:03 AM',
+            time: '2023-10-01T10:03:00',
+            isUserMessage: false,
         },
     ]);
     const [filteredMessages, setFilteredMessages] = useState(messages);
@@ -70,8 +75,8 @@ const ChatRoomPage = () => {
     const handleInputChange = (text: string) => {
         setInputValue(text);
         const filtered = messages.filter(msg =>
-            msg.name.toLowerCase().includes(text.toLowerCase()) ||
-            msg.message.toLowerCase().includes(text.toLowerCase())
+            msg.message.toLowerCase().includes(text.toLowerCase()) ||
+            msg.name.toLowerCase().includes(text.toLowerCase())
         );
         setFilteredMessages(filtered);
     };
@@ -79,10 +84,11 @@ const ChatRoomPage = () => {
     const handleSend = (message: string) => {
         const newMessage = {
             id: messages.length + 1,
-            profileImage: 'https://via.placeholder.com/40',
+            profileImage: '',
             name: 'You',
             message: message,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
+            time: new Date().toISOString(),
+            isUserMessage: true,
         };
         setMessages([...messages, newMessage]);
         setFilteredMessages([...messages, newMessage]);
@@ -117,15 +123,20 @@ const ChatRoomPage = () => {
             </View>
             <ScrollView style={styles.messagesContainer}>
                 {filteredMessages.map((msg, index) => {
-                    const showProfile = index === 0 || filteredMessages[index - 1].name !== msg.name;
+                    const showProfileImage = index === 0 || filteredMessages[index - 1].name !== msg.name;
+                    const showName = index === 0 || filteredMessages[index - 1].name !== msg.name;
+                    const showTime = index === filteredMessages.length - 1 || new Date(filteredMessages[index + 1].time).getMinutes() !== new Date(msg.time).getMinutes();
                     return (
                         <Chat
                             key={msg.id}
-                            profileImage={showProfile ? msg.profileImage : ''}
-                            name={showProfile ? msg.name : ''}
+                            profileImage={msg.profileImage}
+                            name={msg.name}
                             message={msg.message}
                             time={msg.time}
-                            isUserMessage={msg.name === 'You'}
+                            isUserMessage={msg.isUserMessage}
+                            showProfileImage={showProfileImage}
+                            showName={showName}
+                            showTime={showTime}
                         />
                     );
                 })}
