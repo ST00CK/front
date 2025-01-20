@@ -1,13 +1,20 @@
 import React, { useState, useRef } from 'react';
 import { View, ScrollView, TextInput, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
 import PlusIcon from '../components/stoock/Common/PlusIcon';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
 import styles from '../styles/FriendListPageStyles';
 
+type RootStackParamList = {
+    FriendListPage: undefined;
+    MyPage: undefined;
+};
+
+type NavigationProps = NavigationProp<RootStackParamList>;
+
 const FriendListPage = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProps>();
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [profiles, setProfiles] = useState([

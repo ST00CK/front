@@ -1,9 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, Animated } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, Animated, TouchableOpacity } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import Chat from '../components/stoock/ChatRoom/Chat';
 import ChatInput from '../components/stoock/ChatRoom/ChatInput';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
+import ListIcon from '../components/stoock/ChatRoom/List';
+import Profile from '../components/stoock/Common/Profile';
+import Setting from '../components/stoock/Common/Setting';
 import styles from '../styles/ChatRoomPageStyles';
 
 type RootStackParamList = {
@@ -61,7 +64,10 @@ const ChatRoomPage = () => {
     const [filteredMessages, setFilteredMessages] = useState(messages);
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
+    const [isPanelVisible, setIsPanelVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(0)).current;
+    const panelAnim = useRef(new Animated.Value(0)).current;
+    const overlayOpacity = useRef(new Animated.Value(0)).current;
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -94,10 +100,46 @@ const ChatRoomPage = () => {
         setFilteredMessages([...messages, newMessage]);
     };
 
+    const togglePanel = () => {
+        setIsPanelVisible(!isPanelVisible);
+        Animated.parallel([
+            Animated.timing(panelAnim, {
+                toValue: isPanelVisible ? 0 : 1,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+            Animated.timing(overlayOpacity, {
+                toValue: isPanelVisible ? 0 : 1,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    };
+
     const slideDown = slideAnim.interpolate({
         inputRange: [0, 1],
         outputRange: [-50, 0],
     });
+
+    const panelTranslateX = panelAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [300, 0],
+    });
+
+    const overlayStyle = {
+        opacity: overlayOpacity,
+        position: 'absolute' as const,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    };
+
+    // 중복된 프로필 이름 제거
+    const uniqueProfiles = Array.from(new Set(messages.map(msg => msg.name)))
+        .map(name => messages.find(msg => msg.name === name))
+        .filter(profile => profile !== undefined);
 
     return (
         <KeyboardAvoidingView
@@ -108,7 +150,10 @@ const ChatRoomPage = () => {
                 {!showInput ? (
                     <>
                         <Text style={styles.chatRoomName}>{name}</Text>
-                        <SearchIcon onPress={handleShowInput} />
+                        <View style={styles.iconContainer}>
+                            <SearchIcon onPress={handleShowInput} />
+                            <ListIcon onPress={togglePanel} />
+                        </View>
                     </>
                 ) : (
                     <Animated.View style={[styles.inputContainer, { transform: [{ translateY: slideDown }] }]}>
@@ -142,6 +187,26 @@ const ChatRoomPage = () => {
                 })}
             </ScrollView>
             <ChatInput onSend={handleSend} />
+            {isPanelVisible && (
+                <Animated.View style={overlayStyle}>
+                    <TouchableOpacity style={{ flex: 1 }} onPress={togglePanel} />
+                </Animated.View>
+            )}
+            <Animated.View style={[styles.panel, { transform: [{ translateX: panelTranslateX }] }]}>
+                <Text style={styles.panelTitle}>Participants</Text>
+                <ScrollView>
+                    {uniqueProfiles.map((profile, index) => (
+                        <Profile
+                            key={index}
+                            name={profile?.name || ''}
+                            imageUrl={profile?.profileImage || ''}
+                            imageSize={40}
+                            textSize={14}
+                        />
+                    ))}
+                </ScrollView>
+                <Setting onPress={() => { /* 설정 버튼 클릭 시 동작 */ }} />
+            </Animated.View>
         </KeyboardAvoidingView>
     );
 };

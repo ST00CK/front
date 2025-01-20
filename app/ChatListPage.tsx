@@ -3,9 +3,19 @@ import { View, TextInput, Animated, ScrollView } from 'react-native';
 import ChatRoom from '../components/stoock/ChatList/ChatRoom';
 import ChatLogo from '../components/stoock/ChatList/ChatLogo';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
+import PlusIcon from '../components/stoock/Common/PlusIcon';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styles from '../styles/ChatListPageStyles';
 
+type RootStackParamList = {
+    ChatListPage: undefined;
+    ChatAddPage: undefined;
+};
+
+type NavigationProps = NavigationProp<RootStackParamList>;
+
 const ChatListPage = () => {
+    const navigation = useNavigation<NavigationProps>();
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState([
@@ -28,8 +38,15 @@ const ChatListPage = () => {
 
     const handleInputChange = (text: string) => {
         setInputValue(text);
-        const filtered = messages.filter(msg => msg.name.toLowerCase().includes(text.toLowerCase()));
+        const filtered = messages.filter(msg =>
+            msg.name.toLowerCase().includes(text.toLowerCase()) ||
+            msg.message.toLowerCase().includes(text.toLowerCase())
+        );
         setFilteredMessages(filtered);
+    };
+
+    const navigateToChatAddPage = () => {
+        navigation.navigate('ChatAddPage');
     };
 
     const slideDown = slideAnim.interpolate({
@@ -43,6 +60,7 @@ const ChatListPage = () => {
                 <ChatLogo />
             </View>
             <View style={styles.header}>
+                <PlusIcon onShowInput={navigateToChatAddPage} />
                 <SearchIcon onPress={handleShowInput} />
             </View>
             {showInput && (
@@ -51,11 +69,11 @@ const ChatListPage = () => {
                         style={styles.input}
                         value={inputValue}
                         onChangeText={handleInputChange}
-                        placeholder="Search Chat Room" 
+                        placeholder="Search Chat Room"
                     />
                 </Animated.View>
             )}
-            <Animated.ScrollView style={[styles.chatRoomContainer,{ transform: [{ translateY: slideDown }] }]}>
+            <Animated.ScrollView style={[styles.chatRoomContainer, { transform: [{ translateY: slideDown }] }]}>
                 <ChatRoom name="Chat Room" messages={filteredMessages} />
             </Animated.ScrollView>
         </View>

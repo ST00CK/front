@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const LongButton = () => {
+const SettingPage = () => {
   return (
     <View>
-      <Text>LongButton</Text>
+      <Text>SettingPage</Text>
     </View>
   )
 }
 
-export default LongButton
+export default SettingPage
