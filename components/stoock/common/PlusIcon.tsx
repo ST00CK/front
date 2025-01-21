@@ -1,7 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const PlusIcon = ({ onShowInput }) => {
+interface PlusIconProps {
+    onShowInput: () => void;
+}
+
+const PlusIcon: React.FC<PlusIconProps> = ({ onShowInput }) => {
     const handlePress = () => {
         onShowInput();
     };
@@ -28,7 +32,6 @@ const styles = StyleSheet.create({
     plusText: {
         color: '#007AFF',
         fontSize: 20,
-        fontWeight: 'bold',
     },
 });
 

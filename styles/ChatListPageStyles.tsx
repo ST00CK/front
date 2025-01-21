@@ -1,6 +1,15 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 10,
+    },
+    logoContainer: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'flex-end',
@@ -9,27 +18,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: 10,
     },
-    container: {
-        flex: 1,
-        alignItems: 'flex-start',
-        padding: 10,
-    },
-    largeProfile: {
-        position: 'absolute',
-        top: 10,
-        left: 10,
-    },
-    smallProfilesContainer: {
-        marginTop: 100,
-        width: '100%',
-    },
-    smallProfile: {
-        marginBottom: 10,
-    },
     inputContainer: {
-        width: '90%',
-        alignSelf: 'center',
-        marginTop: 70,
+        width: '100%',
+        paddingHorizontal: 10,
+        marginTop: 10,
     },
     input: {
         width: '100%',
@@ -38,6 +30,10 @@ const styles = StyleSheet.create({
         borderBottomColor: 'gray',
         paddingHorizontal: 10,
         marginBottom: 10,
+        marginTop: 10,
+    },
+    chatRoomContainer: {
+        marginTop: 70,
     },
 });
 
