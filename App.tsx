@@ -20,13 +20,13 @@ const App = () => {
         <QueryClientProvider client={queryClient}>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="LoginPage">
-                    <Stack.Screen name="LoginPage" component={LoginPage} />
-                    <Stack.Screen name="SignUpPage" component={SignUpPage} />
                     <Stack.Screen name="FriendListPage" component={FriendListPage} />
                     <Stack.Screen name="ChatListPage" component={ChatListPage} />
                     <Stack.Screen name="ChatAddPage" component={ChatAddPage} />
                     <Stack.Screen name="ChatRoomPage" component={ChatRoomPage} />
                     <Stack.Screen name="MyPage" component={MyPage} />
+                    <Stack.Screen name="LoginPage" component={LoginPage} />
+                    <Stack.Screen name="SignUpPage" component={SignUpPage} />
                 </Stack.Navigator>
             </NavigationContainer>
         </QueryClientProvider>
