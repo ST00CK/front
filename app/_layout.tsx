@@ -15,7 +15,7 @@ const Layout = () => {
             }}
         >
             <Tabs.Screen
-                name="index"
+                name="LoginPage"
                 options={{
                     tabBarStyle: { display: 'none'},
                     headerShown: false,

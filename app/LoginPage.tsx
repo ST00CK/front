@@ -14,6 +14,9 @@ type RootStackParamList = {
 const LoginPage = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
     const navigateToFriendList = () => {
         navigation.navigate('FriendListPage');
     };
@@ -26,8 +29,8 @@ const LoginPage = () => {
         <View style={styles.container}>
             <Image source={StoockImage} style={styles.image} />
             <Text style={styles.text}>Login</Text>
-            <Input placeholder="Email" style={styles.input} />
-            <Input placeholder="Password" style={styles.input} />
+            <Input placeholder="Email" style={styles.input} onChangeText={(text) => setEmail(text)} value={email} />
+            <Input placeholder="Password" style={styles.input} onChangeText={(text) => setPassword(text)} value={password} />
             <View style={styles.buttonContainer}>
                 <ShortButton text='Login' onClick={navigateToFriendList} style={styles.button} />
                 <ShortButton text='Sign Up' onClick={navigateToSighUp} style={styles.button} />

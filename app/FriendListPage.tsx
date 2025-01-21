@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
-import { View, ScrollView, TextInput, Animated } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, ScrollView, TextInput, Animated, Text } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
 import PlusIcon from '../components/stoock/Common/PlusIcon';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
+import { useUsersQuery, User } from '../query/userQuery';
 import styles from '../styles/FriendListPageStyles';
 
 type RootStackParamList = {
@@ -17,17 +18,16 @@ const FriendListPage = () => {
     const navigation = useNavigation<NavigationProps>();
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
-    const [profiles, setProfiles] = useState([
-        { id: 1, name: 'Ryan Reynolds', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 2, name: 'Emma Stone', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 3, name: 'Chris Evans', imageUrl: 'https://via.placeholder.com/50' },
-    ]);
-    const [filteredProfiles, setFilteredProfiles] = useState(profiles);
+    const [filteredProfiles, setFilteredProfiles] = useState<User[]>([]);
     const slideAnim = useRef(new Animated.Value(0)).current;
 
-    const navigateToMyPage = () => {
-        navigation.navigate('MyPage');
-    };
+    const { data, isLoading, error } = useUsersQuery();
+
+    useEffect(() => {
+        if (data) {
+            setFilteredProfiles(data);
+        }
+    }, [data]);
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -40,14 +40,21 @@ const FriendListPage = () => {
 
     const handleInputChange = (text: string) => {
         setInputValue(text);
-        const filtered = profiles.filter(profile => profile.name.toLowerCase().includes(text.toLowerCase()));
-        setFilteredProfiles(filtered);
+        if (data) {
+            const filtered = data.filter(profile =>
+                profile.name.toLowerCase().includes(text.toLowerCase())
+            );
+            setFilteredProfiles(filtered);
+        }
     };
 
-    const slideDown = slideAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [-50, 0],
-    });
+    if (isLoading) {
+        return <View><Text>Loading...</Text></View>;
+    }
+
+    if (error) {
+        return <View><Text>Error loading users</Text></View>;
+    }
 
     return (
         <View style={styles.container}>
@@ -61,11 +68,11 @@ const FriendListPage = () => {
                     name="Ryan Reynolds"
                     imageSize={60}
                     textSize={20}
-                    onPress={navigateToMyPage}
+                    onPress={() => navigation.navigate('MyPage')}
                 />
             </View>
             {showInput && (
-                <Animated.View style={[styles.inputContainer, { transform: [{ translateY: slideDown }] }]}>
+                <Animated.View style={[styles.inputContainer, { transform: [{ translateY: slideAnim }] }]}>
                     <TextInput
                         style={styles.input}
                         value={inputValue}
@@ -74,18 +81,17 @@ const FriendListPage = () => {
                     />
                 </Animated.View>
             )}
-            <Animated.ScrollView style={[styles.smallProfilesContainer, { transform: [{ translateY: slideDown }] }]}>
-                {filteredProfiles.map(profile => (
+            <ScrollView style={styles.smallProfilesContainer}>
+                {filteredProfiles.map((profile) => (
                     <Profile
                         key={profile.id}
-                        imageUrl={profile.imageUrl}
+                        imageUrl={profile.profileImage}
                         name={profile.name}
                         imageSize={40}
                         textSize={14}
-                        style={styles.smallProfile}
                     />
                 ))}
-            </Animated.ScrollView>
+            </ScrollView>
         </View>
     );
 };
