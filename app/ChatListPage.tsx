@@ -19,10 +19,10 @@ const ChatListPage = () => {
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [messages, setMessages] = useState([
-        { id: 1, name: 'Ryan Reynolds', message: 'Hi', time: '10:00 AM', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 2, name: 'Chris Evans', message: 'Hi', time: '10:01 AM', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 3, name: 'Scarlett Johansson', message: 'Hi', time: '10:02 AM', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 4, name: 'Robert Downey Jr.', message: 'Hi', time: '10:03 AM', imageUrl: 'https://via.placeholder.com/50' },
+        { id: 1, name: 'Ryan Reynolds', message: 'Hi', time: '10:00 AM', imageUrl: 'https://placehold.co/50' },
+        { id: 2, name: 'Chris Evans', message: 'Hi', time: '10:01 AM', imageUrl: 'https://placehold.co/50' },
+        { id: 3, name: 'Scarlett Johansson', message: 'Hi', time: '10:02 AM', imageUrl: 'https://placehold.co/50' },
+        { id: 4, name: 'Robert Downey Jr.', message: 'Hi', time: '10:03 AM', imageUrl: 'https://placehold.co/50' },
     ]);
     const [filteredMessages, setFilteredMessages] = useState(messages);
     const slideAnim = useRef(new Animated.Value(0)).current;

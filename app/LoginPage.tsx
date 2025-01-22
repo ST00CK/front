@@ -12,6 +12,7 @@ type RootStackParamList = {
 };
 
 const LoginPage = () => {
+    console.log("LoginPage rendered");
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const [email, setEmail] = React.useState('');

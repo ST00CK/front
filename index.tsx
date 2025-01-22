@@ -1,6 +1,7 @@
 import React from 'react';
-import { AppRegistry } from 'react-native';
-import App from './App';
+import App from './App'; // Import the App component
 import { expo } from './app.json';
 
-AppRegistry.registerComponent(expo.name, () => App);
+export default function AppEntry() {
+    return <App />; // Simply return the App component without registering
+}

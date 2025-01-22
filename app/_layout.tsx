@@ -87,6 +87,24 @@ const Layout = () => {
                     tabBarItemStyle: { flex: 0 },
                 }}
             />
+            <Tabs.Screen
+                name="SettingPage"
+                options={{
+                    tabBarStyle: { display: 'none'},
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
+            <Tabs.Screen
+                name="index"
+                options={{
+                    tabBarStyle: { display: 'none'},
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
         </Tabs>
     );
 };

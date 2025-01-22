@@ -22,7 +22,7 @@ const ChatRoomPage = () => {
     const [messages, setMessages] = useState([
         {
             id: 1,
-            profileImage: 'https://via.placeholder.com/50',
+            profileImage: 'https://placehold.co/50',
             name: 'Ryan Reynolds',
             message: 'Hello!',
             time: '2023-10-01T10:00:00',
@@ -30,7 +30,7 @@ const ChatRoomPage = () => {
         },
         {
             id: 2,
-            profileImage: 'https://via.placeholder.com/50',
+            profileImage: 'https://placehold.co/50',
             name: 'Chris Evans',
             message: 'Hi there!',
             time: '2023-10-01T10:01:00',
@@ -38,7 +38,7 @@ const ChatRoomPage = () => {
         },
         {
             id: 3,
-            profileImage: 'https://via.placeholder.com/50',
+            profileImage: 'https://placehold.co/50',
             name: 'Scarlett Johansson',
             message: 'How are you?',
             time: '2023-10-01T10:02:00',
@@ -46,7 +46,7 @@ const ChatRoomPage = () => {
         },
         {
             id: 4,
-            profileImage: 'https://via.placeholder.com/50',
+            profileImage: 'https://placehold.co/50',
             name: 'Robert Downey Jr.',
             message: 'Good morning!',
             time: '2023-10-01T10:03:00',
@@ -54,7 +54,7 @@ const ChatRoomPage = () => {
         },
         {
             id: 5,
-            profileImage: 'https://via.placeholder.com/50',
+            profileImage: 'https://placehold.co/50',
             name: 'Robert Downey Jr.',
             message: 'Good morning!',
             time: '2023-10-01T10:03:00',

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import { useQuery, UseQueryResult, useMutation, UseMutationResult } from '@tanstack/react-query';
 import { useUserStore } from '../store/useUserStore';
 
 const API_URL = process.env.REACT_APP_STOOCK_USER_API_URL;
@@ -31,4 +31,30 @@ export const useUsersQuery = (): UseQueryResult<User[], unknown> => {
     }
 
     return queryResult;
+};
+
+// 회원가입을 위한 mutation
+export interface SignUpData {
+    userId: string;
+    name: string;
+    email: string;
+    password: string;
+}
+
+export const useSignUpMutation = (): UseMutationResult<void, unknown, SignUpData> => {
+    return useMutation(async (data: SignUpData) => {
+        const response = await axios.post(`${API_URL}/user/formuser`, {
+            formUserDto: {
+                userId: data.userId,
+                passwd: data.password,
+            },
+            userDto: {
+                userId: data.userId,
+                name: data.name,
+                email: data.email,
+                file: '', // 필요에 따라 추가
+            },
+        });
+        return response.data;
+    });
 };
