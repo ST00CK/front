@@ -4,13 +4,13 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
 import PlusIcon from '../components/stoock/Common/PlusIcon';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
-
+import Setting from '../components/stoock/Common/Setting';
 import styles from '../styles/FriendListPageStyles';
-
 
 type RootStackParamList = {
     FriendListPage: undefined;
     MyPage: undefined;
+    SettingPage: undefined;
 };
 
 type NavigationProps = NavigationProp<RootStackParamList>;
@@ -31,9 +31,9 @@ const FriendListPage = () => {
         navigation.navigate('MyPage');
     };
 
-
-
-
+    const navigateToSettingPage = () => {
+        navigation.navigate('SettingPage');
+    };
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -48,10 +48,6 @@ const FriendListPage = () => {
         setInputValue(text);
         const filtered = profiles.filter(profile => profile.name.toLowerCase().includes(text.toLowerCase()));
         setFilteredProfiles(filtered);
-
-
-
-
     };
 
     const slideDown = slideAnim.interpolate({
@@ -59,14 +55,12 @@ const FriendListPage = () => {
         outputRange: [-50, 0],
     });
 
-
-
-
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <PlusIcon onShowInput={() => {}} />
                 <SearchIcon onPress={handleShowInput} />
+                <Setting onPress={navigateToSettingPage} />
             </View>
             <View style={styles.largeProfile}>
                 <Profile

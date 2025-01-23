@@ -12,17 +12,12 @@ import SignUpPage from './app/SignUpPage';
 
 // QueryClient 생성
 const queryClient = new QueryClient();
-console.log("QueryClient initialized:", queryClient);
 
 const Stack = createStackNavigator();
 
 const App = () => {
-    console.log("App component rendered");
-    console.log("QueryClient initialized:", queryClient);
     return (
         <QueryClientProvider client={queryClient}>
-            console.log("QueryClientProvider rendered")
-            console.log("NavigationContainer rendered")
                 <Stack.Navigator initialRouteName="LoginPage">
                     <Stack.Screen name="FriendListPage" component={FriendListPage} />
                     <Stack.Screen name="ChatListPage" component={ChatListPage} />
