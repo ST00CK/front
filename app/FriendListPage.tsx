@@ -4,7 +4,9 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
 import PlusIcon from '../components/stoock/Common/PlusIcon';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
+
 import styles from '../styles/FriendListPageStyles';
+
 
 type RootStackParamList = {
     FriendListPage: undefined;
@@ -18,9 +20,9 @@ const FriendListPage = () => {
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [profiles, setProfiles] = useState([
-        { id: 1, name: 'Ryan Reynolds', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 2, name: 'Emma Stone', imageUrl: 'https://via.placeholder.com/50' },
-        { id: 3, name: 'Chris Evans', imageUrl: 'https://via.placeholder.com/50' },
+        { id: 1, name: 'Ryan Reynolds', imageUrl: 'https://placehold.co/50' },
+        { id: 2, name: 'Emma Stone', imageUrl: 'https://placehold.co/50' },
+        { id: 3, name: 'Chris Evans', imageUrl: 'https://placehold.co/50' },
     ]);
     const [filteredProfiles, setFilteredProfiles] = useState(profiles);
     const slideAnim = useRef(new Animated.Value(0)).current;
@@ -28,6 +30,10 @@ const FriendListPage = () => {
     const navigateToMyPage = () => {
         navigation.navigate('MyPage');
     };
+
+
+
+
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -42,12 +48,19 @@ const FriendListPage = () => {
         setInputValue(text);
         const filtered = profiles.filter(profile => profile.name.toLowerCase().includes(text.toLowerCase()));
         setFilteredProfiles(filtered);
+
+
+
+
     };
 
     const slideDown = slideAnim.interpolate({
         inputRange: [0, 1],
         outputRange: [-50, 0],
     });
+
+
+
 
     return (
         <View style={styles.container}>
@@ -57,7 +70,7 @@ const FriendListPage = () => {
             </View>
             <View style={styles.largeProfile}>
                 <Profile
-                    imageUrl="https://via.placeholder.com/50"
+                    imageUrl="https://placehold.co/50"
                     name="Ryan Reynolds"
                     imageSize={60}
                     textSize={20}

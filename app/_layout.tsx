@@ -15,7 +15,7 @@ const Layout = () => {
             }}
         >
             <Tabs.Screen
-                name="index"
+                name="LoginPage"
                 options={{
                     tabBarStyle: { display: 'none'},
                     headerShown: false,
@@ -80,6 +80,24 @@ const Layout = () => {
             />
             <Tabs.Screen
                 name="AppNavigator"
+                options={{
+                    tabBarStyle: { display: 'none'},
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
+            <Tabs.Screen
+                name="SettingPage"
+                options={{
+                    tabBarStyle: { display: 'none'},
+                    headerShown: false,
+                    tabBarButton: () => null,
+                    tabBarItemStyle: { flex: 0 },
+                }}
+            />
+            <Tabs.Screen
+                name="index"
                 options={{
                     tabBarStyle: { display: 'none'},
                     headerShown: false,

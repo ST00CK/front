@@ -1,19 +1,17 @@
-// import { create } from 'zustand';
+import { create } from 'zustand';
 
-// interface User {
-//     id: number;
-//     name: string;
-//     profileImage: string;
-// }
+interface User {
+    id: number;
+    name: string;
+    profileImage: string;
+}
 
-// interface UserStore {
-//     users: User[];
-//     setUsers: (users: User[]) => void;
-// }
+interface UserStore {
+    users: User[];
+    setUsers: (users: User[]) => void;
+}
 
-// export const useUserStore = create<UserStore>((set) => ({
-//     users: [],
-//     setUsers: (users) => set({ users }),
-// }));
-
-//예시시
+export const useUserStore = create<UserStore>((set) => ({
+    users: [],
+    setUsers: (users) => set({ users }),
+}));
