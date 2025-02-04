@@ -15,12 +15,6 @@ type RootStackParamList = {
 
 const LoginPage = () => {
 
-  //isLoggedIn 확인 코드
-  const loggedIn = useUserStore((state) => state.isLoggedIn());
-  useEffect(()=> {
-    console.log("loggedIn : " + loggedIn)
-  })
-
   console.log("LoginPage rendered");
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -39,9 +33,6 @@ const LoginPage = () => {
     navigation.navigate('SignUpPage');
   };
 
-
-  const user = useUserStore((state) => state.user);
-
   //폼 로그인 핸들
   const handleLogin = async () => {
     try {
@@ -49,11 +40,7 @@ const LoginPage = () => {
         userId: email,
         password: password,
       })
-      if (user) {
-        alert('User Store Updated' + `Logged in user: ${user.name}`);
-      } else {
-        alert('User Store' + 'No user found in store.');
-      }
+
       navigateToFriendList();
     } catch (error) {
       console.error("Login failed:", error);
@@ -67,12 +54,6 @@ const LoginPage = () => {
       // Kakao 로그인 mutation 실행
       await kakaoLoginMutation.mutateAsync();
 
-      // 로그인 성공 후, store에 사용자 정보가 잘 들어갔는지 임시로 확인
-      if (user) {
-        alert('User Store Updated'+ `Logged in user: ${user.name}`);
-      } else {
-        alert('User Store'+ 'No user found in store.');
-      }
       // 친구 목록 페이지로 이동
       navigateToFriendList();
     } catch (error) {
