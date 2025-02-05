@@ -9,6 +9,7 @@ import ChatRoomPage from './app/ChatRoomPage';
 import MyPage from './app/MyPage';
 import LoginPage from './app/LoginPage';
 import SignUpPage from './app/SignUpPage';
+import KakaoInitializer from './components/KakaoInitializer';
 
 // QueryClient 생성
 const queryClient = new QueryClient();
@@ -18,6 +19,7 @@ const Stack = createStackNavigator();
 const App = () => {
     return (
         <QueryClientProvider client={queryClient}>
+            <KakaoInitializer />
                 <Stack.Navigator initialRouteName="LoginPage">
                     <Stack.Screen name="FriendListPage" component={FriendListPage} />
                     <Stack.Screen name="ChatListPage" component={ChatListPage} />
