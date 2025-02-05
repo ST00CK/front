@@ -13,13 +13,10 @@ import KakaoInitializer from './components/KakaoInitializer';
 
 // QueryClient 생성
 const queryClient = new QueryClient();
-console.log("QueryClient initialized:", queryClient);
 
 const Stack = createStackNavigator();
 
 const App = () => {
-    console.log("App component rendered");
-    console.log("QueryClient initialized:", queryClient);
     return (
         <QueryClientProvider client={queryClient}>
             <KakaoInitializer />
