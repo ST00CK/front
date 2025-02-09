@@ -12,13 +12,13 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 24,
         position: 'absolute',
-        top: '30%',
+        top: '25%',
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 20,
-        width: '70%',
+        width: '80%',
     },
     image: {
         position: 'absolute',
@@ -27,8 +27,10 @@ const styles = StyleSheet.create({
     },
     input: {
         marginVertical: 10,
+        width: '80%',
     },
     button: {
+        flex: 1,
         margin: 10,
     },
 });

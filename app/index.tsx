@@ -1,8 +1,7 @@
 import { Redirect } from 'expo-router';
-import App from '../App';
 
 const Index = () => {
-    return <App />;
+    return <Redirect href="/LoginPage" />;
 };
 
 export default Index;

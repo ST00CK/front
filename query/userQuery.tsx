@@ -34,22 +34,32 @@ export const useUsersQuery = (): UseQueryResult<User[], unknown> => {
 };
 
 //이메일 인증 mutation
-export const useEmailSendMutation = async (email: string) => {
-    const response = await axios.post(`${API_URL}/user/send`, {
-        email
+export const useEmailSendMutation = (): UseMutationResult<{ message: string }, unknown, string> => {
+    return useMutation({
+        mutationFn: async (email: string) => {
+            const response = await axios.post(`${API_URL}/send`, {
+                email: email
+            }, {
+                withCredentials: true,
+            });
+            return response.data;
+        }
     });
-
-    return response.data;
 };
 
 //이메일 확인 코드 검증
-export const useEmailCheckMutation = async (email: string, authCode: string) => {
-    const response = await axios.post(`${API_URL}/user/verify`, {
-        email,
-        authCode
+export const useEmailCheckMutation = (): UseMutationResult<{ message: string }, unknown, { email: string, authCode: string }> => {
+    return useMutation({
+        mutationFn: async ({ email, authCode }: { email: string, authCode: string }) => {
+            const response = await axios.post(`${API_URL}/verify`, {
+                email: email,
+                authCode: authCode
+            }, {
+                withCredentials: true,
+            });
+            return response.data;
+        }
     });
-
-    return response.data;
 };
 
 // 회원가입 데이터 타입

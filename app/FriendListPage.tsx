@@ -6,6 +6,7 @@ import PlusIcon from '../components/stoock/Common/PlusIcon';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
 import Setting from '../components/stoock/Common/Setting';
 import styles from '../styles/FriendListPageStyles';
+import { useUserStore } from '../store/useUserStore';
 
 type RootStackParamList = {
     FriendListPage: undefined;
@@ -55,6 +56,8 @@ const FriendListPage = () => {
         outputRange: [-50, 0],
     });
 
+    const { user } = useUserStore();
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -65,7 +68,8 @@ const FriendListPage = () => {
             <View style={styles.largeProfile}>
                 <Profile
                     imageUrl="https://placehold.co/50"
-                    name="Ryan Reynolds"
+                    // imageUrl={user ? user.file : 'https://placehold.co/50'}
+                    name={user ? user.name : 'Guest'}
                     imageSize={60}
                     textSize={20}
                     onPress={navigateToMyPage}
