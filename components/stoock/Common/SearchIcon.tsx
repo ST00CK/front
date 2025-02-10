@@ -1,5 +1,6 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons'; // expo 아이콘 패키지 사용
 
 interface SearchIconProps {
     onPress: () => void;
@@ -8,7 +9,7 @@ interface SearchIconProps {
 const SearchIcon: React.FC<SearchIconProps> = ({ onPress }) => {
     return (
         <TouchableOpacity style={styles.searchButton} onPress={onPress}>
-            <Text style={styles.searchText}>🔍</Text>
+            <FontAwesome name="search" style={styles.searchIcon} />
         </TouchableOpacity>
     );
 };
@@ -21,8 +22,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 10,
     },
-    searchText: {
+    searchIcon: {
         fontSize: 20,
+        color: 'black',
     },
 });
 

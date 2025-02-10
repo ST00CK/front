@@ -4,6 +4,7 @@ import ChatRoom from '../components/stoock/ChatList/ChatRoom';
 import ChatLogo from '../components/stoock/ChatList/ChatLogo';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
 import PlusIcon from '../components/stoock/Common/PlusIcon';
+import BottomTab from '../components/stoock/Common/BottomTab';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styles from '../styles/ChatListPageStyles';
 
@@ -55,27 +56,30 @@ const ChatListPage = () => {
     });
 
     return (
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
-                <ChatLogo />
+        <View style={styles.pageContainer}>
+            <View style={styles.container}>
+                <View style={styles.logoContainer}>
+                    <ChatLogo />
+                </View>
+                <View style={styles.header}>
+                    <PlusIcon onShowInput={navigateToChatAddPage} />
+                    <SearchIcon onPress={handleShowInput} />
+                </View>
+                {showInput && (
+                    <Animated.View style={[styles.inputContainer, { transform: [{ translateY: slideDown }] }]}>
+                        <TextInput
+                            style={styles.input}
+                            value={inputValue}
+                            onChangeText={handleInputChange}
+                            placeholder="Search Chat Room"
+                        />
+                    </Animated.View>
+                )}
+                <Animated.ScrollView style={[styles.chatRoomContainer, { transform: [{ translateY: slideDown }] }]}>
+                    <ChatRoom name="Chat Room" messages={filteredMessages} />
+                </Animated.ScrollView>
             </View>
-            <View style={styles.header}>
-                <PlusIcon onShowInput={navigateToChatAddPage} />
-                <SearchIcon onPress={handleShowInput} />
-            </View>
-            {showInput && (
-                <Animated.View style={[styles.inputContainer, { transform: [{ translateY: slideDown }] }]}>
-                    <TextInput
-                        style={styles.input}
-                        value={inputValue}
-                        onChangeText={handleInputChange}
-                        placeholder="Search Chat Room"
-                    />
-                </Animated.View>
-            )}
-            <Animated.ScrollView style={[styles.chatRoomContainer, { transform: [{ translateY: slideDown }] }]}>
-                <ChatRoom name="Chat Room" messages={filteredMessages} />
-            </Animated.ScrollView>
+            <BottomTab currentPage="ChatListPage" />
         </View>
     );
 };

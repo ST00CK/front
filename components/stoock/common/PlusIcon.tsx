@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons'; // expo 아이콘 패키지 사용
 
 interface PlusIconProps {
     onShowInput: () => void;
@@ -11,27 +12,23 @@ const PlusIcon: React.FC<PlusIconProps> = ({ onShowInput }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.plusButton} onPress={handlePress}>
-                <Text style={styles.plusText}>+</Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.plusButton} onPress={handlePress}>
+            <FontAwesome name="plus" style={styles.plusIcon} />
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-    },
     plusButton: {
-        width: 20,
-        height: 20,
+        width: 30,
+        height: 30,
         justifyContent: 'center',
         alignItems: 'center',
+        marginLeft: 10,
     },
-    plusText: {
-        color: '#007AFF',
+    plusIcon: {
         fontSize: 20,
+        color: 'black',
     },
 });
 

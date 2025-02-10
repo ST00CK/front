@@ -15,12 +15,10 @@ const Layout = () => {
                 }}
             >
                 <Stack.Screen name="LoginPage" />
-                <Stack.Screen name="FriendListPage" />
-                <Stack.Screen name="ChatListPage" />
+                <Stack.Screen name="SignUpPage" />
                 <Stack.Screen name="ChatAddPage" />
                 <Stack.Screen name="ChatRoomPage" />
                 <Stack.Screen name="MyPage" />
-                <Stack.Screen name="SignUpPage" />
                 <Stack.Screen name="SettingPage" />
                 <Stack.Screen name="index" />
             </Stack>

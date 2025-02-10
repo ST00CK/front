@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    pageContainer: {
+        flex: 1
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'flex-end',

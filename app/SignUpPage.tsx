@@ -53,7 +53,7 @@ const SignUpPage = () => {
         }
 
         if (password !== confirmPassword) {
-            alert("Passwords do not match!");
+            alert("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
             return;
         }
 
@@ -66,14 +66,14 @@ const SignUpPage = () => {
             });
             setIsModalVisible(true);
         } catch (error) {
-            console.error("Sign up failed:", error);
-            alert("Sign up failed. Please try again.");
+            console.error("회원가입 실패:", error);
+            alert("회원가입에 실패했습니다. 다시 시도해주세요.");
         }
     };
 
     const handleModalSignUp = () => {
         setIsModalVisible(false);
-        navigateToLoginPage(); // 모달 닫고 로그인 페이지로 이동
+        navigateToLoginPage();
     };
 
     const handleSendEmailCode = async () => {

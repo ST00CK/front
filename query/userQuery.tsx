@@ -33,6 +33,26 @@ export const useUsersQuery = (): UseQueryResult<User[], unknown> => {
     return queryResult;
 };
 
+// 로그아웃 함수
+export const handleLogout = async () => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/logout`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            }
+        );
+        alert(response.data.message);
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    } catch (error) {
+        alert('로그아웃 처리 중 오류가 발생했습니다.');
+    }
+};
+
 //이메일 인증 mutation
 export const useEmailSendMutation = (): UseMutationResult<{ message: string }, unknown, string> => {
     return useMutation({
