@@ -1,7 +1,7 @@
-// import React from 'react';
-// import App from './App';
-// import { expo } from './app.json';
+import { Redirect } from 'expo-router';
 
-// export default function AppEntry() {
-//     return <App />;
-// }
+const Index = () => {
+    return <Redirect href="/LoginPage" />;
+};
+
+export default Index;

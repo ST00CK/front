@@ -15,8 +15,6 @@ type RootStackParamList = {
 
 const LoginPage = () => {
 
-  console.log("LoginPage rendered");
-
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [email, setEmail] = React.useState('');
@@ -65,12 +63,12 @@ const LoginPage = () => {
   return (
     <View style={styles.container}>
       <Image source={StoockImage} style={styles.image} />
-      <Text style={styles.text}>Login</Text>
-      <Input placeholder="Email" style={styles.input} onChangeText={(text) => setEmail(text)} value={email} />
-      <Input placeholder="Password" style={styles.input} onChangeText={(text) => setPassword(text)} value={password} />
+      <Text style={styles.text}>로그인</Text>
+      <Input placeholder="이메일" style={styles.input} onChangeText={(text) => setEmail(text)} value={email} />
+      <Input placeholder="비밀번호" style={styles.input} onChangeText={(text) => setPassword(text)} secureTextEntry value={password} />
       <View style={styles.buttonContainer}>
-        <ShortButton text='Login' onClick={handleLogin} style={styles.button} />
-        <ShortButton text='Sign Up' onClick={navigateToSighUp} style={styles.button} />
+        <ShortButton text='로그인' onClick={handleLogin} style={[styles.button, { marginLeft: 0 }]} />
+        <ShortButton text='회원가입' onClick={navigateToSighUp} style={[styles.button, { marginRight: 0 }]} />
       </View>
       <TouchableOpacity onPress={handleKaKaoLogin} >
         <Image source={kakaoImage} />

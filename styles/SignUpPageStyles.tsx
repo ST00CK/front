@@ -1,6 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
@@ -11,31 +17,49 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 24,
-        marginBottom: 20,
+        marginBottom: 30,
     },
     inputContainer: {
-        marginTop: '40%',
+        marginBottom: 5,
         width: '80%',
         alignItems: 'center',
     },
     buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 20,
-        width: '70%',
-        paddingHorizontal: 20,
+        marginBottom: 5,
+        width: '80%',
+        alignItems: 'center',
+    },
+    emailCodeInputContainer: {
+        marginBottom: 5,
+        width: '100%',
+        alignItems: 'center',
+    },
+    emailCodeButtonContainer: {
+        marginBottom: 5,
+        width: '100%',
+        alignItems: 'center',
     },
     image: {
-        position: 'absolute',
-        top: '10%',
-        marginBottom: 20,
+        marginBottom: 40,
     },
     input: {
-        marginVertical: 15,
-        width: '70%',
+        marginVertical: 10,
+        width: '100%',
+    },
+    emailCodeInput: {
+        marginVertical: 10,
+        width: '100%',
     },
     button: {
         margin: 10,
+        width: '100%',
+    },
+    emailCodeButton: {
+        margin: 10,
+        width: '100%',
+    },
+    disabledButton: {
+        backgroundColor: '#d3d3d3',
     },
     modalContainer: {
         flex: 1,

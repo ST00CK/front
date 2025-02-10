@@ -33,23 +33,53 @@ export const useUsersQuery = (): UseQueryResult<User[], unknown> => {
     return queryResult;
 };
 
-//이메일 인증 mutation
-export const useEmailSendMutation = async (email: string) => {
-    const response = await axios.post(`${API_URL}/user/send`, {
-        email
-    });
+// 로그아웃 함수
+export const handleLogout = async () => {
+    try {
+        const response = await axios.post(
+            `${API_URL}/logout`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            }
+        );
+        alert(response.data.message);
+        localStorage.removeItem('token');
+        window.location.href = '/';
+    } catch (error) {
+        alert('로그아웃 처리 중 오류가 발생했습니다.');
+    }
+};
 
-    return response.data;
+//이메일 인증 mutation
+export const useEmailSendMutation = (): UseMutationResult<{ message: string }, unknown, string> => {
+    return useMutation({
+        mutationFn: async (email: string) => {
+            const response = await axios.post(`${API_URL}/send`, {
+                email: email
+            }, {
+                withCredentials: true,
+            });
+            return response.data;
+        }
+    });
 };
 
 //이메일 확인 코드 검증
-export const useEmailCheckMutation = async (email: string, authCode: string) => {
-    const response = await axios.post(`${API_URL}/user/verify`, {
-        email,
-        authCode
+export const useEmailCheckMutation = (): UseMutationResult<{ message: string }, unknown, { email: string, authCode: string }> => {
+    return useMutation({
+        mutationFn: async ({ email, authCode }: { email: string, authCode: string }) => {
+            const response = await axios.post(`${API_URL}/verify`, {
+                email: email,
+                authCode: authCode
+            }, {
+                withCredentials: true,
+            });
+            return response.data;
+        }
     });
-
-    return response.data;
 };
 
 // 회원가입 데이터 타입
