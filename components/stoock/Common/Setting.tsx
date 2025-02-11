@@ -32,22 +32,21 @@ const Setting: React.FC<SettingProps> = ({ onPress }) => {
             <Modal
                 transparent={true}
                 visible={modalVisible}
-                animationType="slide"
+                animationType="none"
                 onRequestClose={() => setModalVisible(false)}
             >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <TouchableOpacity style={styles.button} onPress={navigateToMyPage}>
-                            <Text style={styles.buttonText}>내정보</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={handleLogout}>
-                            <Text style={styles.buttonText}>로그아웃</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-                            <Text style={styles.closeButtonText}>닫기</Text>
-                        </TouchableOpacity>
+                <TouchableOpacity style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <TouchableOpacity style={styles.button} onPress={navigateToMyPage}>
+                                <Text style={styles.buttonText}>내정보</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button} onPress={handleLogout}>
+                                <Text style={styles.buttonText}>로그아웃</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
             </Modal>
         </View>
     );
@@ -57,38 +56,30 @@ const styles = StyleSheet.create({
     container: {
         padding: 10,
     },
-    modalContainer: {
+    modalOverlay: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+    },
+    modalContainer: {
+        marginTop: 55,
+        marginRight: 25,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: 'black',
     },
     modalContent: {
-        width: 300,
-        padding: 20,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        alignItems: 'center',
+        padding: 10,
     },
     button: {
-        width: '100%',
-        padding: 15,
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-    },
-    buttonText: {
-        fontSize: 18,
-        color: 'black',
-    },
-    closeButton: {
-        marginTop: 10,
         padding: 10,
         alignItems: 'center',
     },
-    closeButtonText: {
+    buttonText: {
         fontSize: 16,
-        color: 'red',
+        color: 'black',
     },
 });
 

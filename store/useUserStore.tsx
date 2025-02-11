@@ -11,6 +11,7 @@ interface User {
 interface UserStore {
     user: User | null;
     setUser: (user: User) => void;
+    updateUser: (user: Partial<User>) => void;
     logout: () => void;
     isLoggedIn: () => boolean;
 }
@@ -20,6 +21,10 @@ export const useUserStore = create<UserStore, [["zustand/persist", UserStore]]>(
         (set, get) => ({
             user: null,
             setUser: (user) => set({ user }),
+            updateUser: (updatedUser) => set((state) => {
+                const user = state.user ? { ...state.user, ...updatedUser } : null;
+                return { user };
+            }),
             logout: () => set({ user: null }),
             isLoggedIn: () => get().user !== null,
         }),
