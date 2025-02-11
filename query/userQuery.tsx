@@ -35,6 +35,7 @@ export const useUsersQuery = (): UseQueryResult<User[], unknown> => {
 
 // 로그아웃 함수
 export const handleLogout = async () => {
+    const {logout} = useUserStore();
     try {
         const response = await axios.post(
             `${API_URL}/logout`,
@@ -45,6 +46,7 @@ export const handleLogout = async () => {
                 },
             }
         );
+        logout();
         alert(response.data.message);
         localStorage.removeItem('token');
         window.location.href = '/';
@@ -61,6 +63,9 @@ export const useEmailSendMutation = (): UseMutationResult<{ message: string }, u
                 email: email
             }, {
                 withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
             return response.data;
         }
@@ -76,6 +81,9 @@ export const useEmailCheckMutation = (): UseMutationResult<{ message: string }, 
                 authCode: authCode
             }, {
                 withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
             return response.data;
         }
@@ -205,4 +213,30 @@ export const useKakaoLoginMutation = (): UseMutationResult<{ message: string }, 
       setUser({ file, name, userId, email });
     },
   });
+}
+
+export interface ChangePasswordData{
+    userId: string;
+    oldPassword: string;
+    newPassword: string;
+}
+//비밀번호 변경 mutation
+export const useChangePassWordMutation = (): UseMutationResult<{message:string}, unknown, ChangePasswordData> =>{
+    return useMutation({
+        mutationFn: async (data: ChangePasswordData) => {
+            const response = await axios.post(`${API_URL}/change/password`,{
+                userId: data.userId,
+                oldPassword: data.oldPassword,
+                newPassword: data.newPassword,
+            },
+                {
+                    withCredentials: true,
+                }
+            );
+            return response.data;
+        },
+        onSuccess:(data)=>{
+            alert(data.message)
+        }
+    })
 }
