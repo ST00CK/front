@@ -59,6 +59,7 @@ export const handleLogout = async () => {
 export const useEmailSendMutation = (): UseMutationResult<{ message: string }, unknown, string> => {
     return useMutation({
         mutationFn: async (email: string) => {
+            console.log("Sending email:", email); // email 값 확인
             const response = await axios.post(`${API_URL}/send`, {
                 email: email
             }, {
@@ -76,6 +77,7 @@ export const useEmailSendMutation = (): UseMutationResult<{ message: string }, u
 export const useEmailCheckMutation = (): UseMutationResult<{ message: string }, unknown, { email: string, authCode: string }> => {
     return useMutation({
         mutationFn: async ({ email, authCode }: { email: string, authCode: string }) => {
+            console.log("Verifying email and authCode:", email, authCode); // email과 authCode 값 확인
             const response = await axios.post(`${API_URL}/verify`, {
                 email: email,
                 authCode: authCode
@@ -214,6 +216,32 @@ export const useKakaoLoginMutation = (): UseMutationResult<{ message: string }, 
     },
   });
 }
+
+// 프로필 사진 변경 mutation
+export const useProfileImageMutation = (): UseMutationResult<{ fileUrl: string }, unknown, { userId: string, file: string }> => {
+    return useMutation({
+      mutationFn: async ({ userId, file }: { userId: string, file: string }) => {
+        const formData = new FormData();
+        formData.append('userId', userId);
+        
+        // File 객체 생성
+        const fileObj = new File([file], 'profile.jpg', { type: 'image/jpeg' });
+        formData.append('file', fileObj);
+  
+        formData.forEach((value, key) => {
+          console.log(key, value);
+        });
+  
+        const response = await axios.post(`${API_URL}/upload`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        return response.data;
+      },
+    });
+  };
 
 export interface ChangePasswordData{
     userId: string;
