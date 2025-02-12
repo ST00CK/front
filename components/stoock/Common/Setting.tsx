@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, Modal } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { handleLogout } from '../../../query/userQuery';
+import { useLogout } from '../../../query/userQuery';
 
 interface SettingProps {
     onPress: () => void;
@@ -18,6 +18,7 @@ type NavigationProps = NavigationProp<RootStackParamList>;
 const Setting: React.FC<SettingProps> = ({ onPress }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const navigation = useNavigation<NavigationProps>();
+    const logout = useLogout();
 
     const navigateToMyPage = () => {
         setModalVisible(false);
@@ -41,7 +42,7 @@ const Setting: React.FC<SettingProps> = ({ onPress }) => {
                             <TouchableOpacity style={styles.button} onPress={navigateToMyPage}>
                                 <Text style={styles.buttonText}>내정보</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.button} onPress={handleLogout}>
+                            <TouchableOpacity style={styles.button} onPress={logout}>
                                 <Text style={styles.buttonText}>로그아웃</Text>
                             </TouchableOpacity>
                         </View>

@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Image, TouchableOpacity, Linking } from 'react-native';
-import { useNavigation, NavigationProp } from 'expo-router';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from 'expo-router';
+import { NavigationProp } from '@react-navigation/native';
 import ShortButton from '../components/stoock/Common/ShortButton';
 import styles from '../styles/LoginPageStyles';
 import Input from './../components/stoock/Common/Input';
 import StoockImage from '../assets/images/STOOCK!.png';
 import kakaoImage from '../assets/images/kakao.png';
 import { useLoginMutation, useKakaoLoginMutation } from '@/query/userQuery';
-import { useUserStore } from '../store/useUserStore';
 
 type RootStackParamList = {
   FriendListPage: undefined;
+  SignUpPage: undefined;
+  PasswdChangePage: undefined;
 };
 
 const LoginPage = () => {
@@ -29,6 +31,10 @@ const LoginPage = () => {
 
   const navigateToSighUp = () => {
     navigation.navigate('SignUpPage');
+  };
+
+  const navigateToPasswdChange = () => {
+    navigation.navigate('PasswdChangePage');
   };
 
   //폼 로그인 핸들
@@ -52,11 +58,10 @@ const LoginPage = () => {
       // Kakao 로그인 mutation 실행
       await kakaoLoginMutation.mutateAsync();
 
-      // 친구 목록 페이지로 이동
       navigateToFriendList();
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Login failed"+ "Please try again.");
+      alert("Login failed. Please try again.");
     }
   };
 
@@ -73,7 +78,9 @@ const LoginPage = () => {
       <TouchableOpacity onPress={handleKaKaoLogin} >
         <Image source={kakaoImage} />
       </TouchableOpacity>
-      <Button title="Go to Friend List" onPress={navigateToFriendList} />
+      <TouchableOpacity onPress={navigateToPasswdChange} style={styles.forgotPasswordButton}>
+        <Text style={styles.forgotPasswordText}>비밀번호가 기억이 안나요</Text>
+      </TouchableOpacity>
     </View>
   );
 };

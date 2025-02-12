@@ -34,27 +34,28 @@ export const useUsersQuery = (): UseQueryResult<User[], unknown> => {
 };
 
 // 로그아웃 함수
-export const handleLogout = async () => {
-    const {logout} = useUserStore();
-    try {
-        const response = await axios.post(
-            `${API_URL}/logout`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-            }
-        );
-        logout();
-        alert(response.data.message);
-        localStorage.removeItem('token');
-        window.location.href = '/';
-    } catch (error) {
-        alert('로그아웃 처리 중 오류가 발생했습니다.');
-    }
+export const useLogout = () => {
+    const { logout } = useUserStore();
+    return async () => {
+        try {
+            const response = await axios.post(
+                `${API_URL}/logout`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                }
+            );
+            logout();
+            alert(response.data.message);
+            localStorage.removeItem('token');
+            window.location.href = '/';
+        } catch (error) {
+            alert('로그아웃 처리 중 오류가 발생했습니다.');
+        }
+    };
 };
-
 //이메일 인증 mutation
 export const useEmailSendMutation = (): UseMutationResult<{ message: string }, unknown, string> => {
     return useMutation({
@@ -82,11 +83,12 @@ export const useEmailCheckMutation = (): UseMutationResult<{ message: string }, 
                 email: email,
                 authCode: authCode
             }, {
-                withCredentials: true,
                 headers: {
                     "Content-Type": "application/json",
                 },
+                withCredentials: true
             });
+            console.log("Response:",response.data);
             return response.data;
         }
     });
@@ -217,32 +219,6 @@ export const useKakaoLoginMutation = (): UseMutationResult<{ message: string }, 
   });
 }
 
-// 프로필 사진 변경 mutation
-export const useProfileImageMutation = (): UseMutationResult<{ fileUrl: string }, unknown, { userId: string, file: string }> => {
-    return useMutation({
-      mutationFn: async ({ userId, file }: { userId: string, file: string }) => {
-        const formData = new FormData();
-        formData.append('userId', userId);
-        
-        // File 객체 생성
-        const fileObj = new File([file], 'profile.jpg', { type: 'image/jpeg' });
-        formData.append('file', fileObj);
-  
-        formData.forEach((value, key) => {
-          console.log(key, value);
-        });
-  
-        const response = await axios.post(`${API_URL}/upload`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-  
-        return response.data;
-      },
-    });
-  };
-
 export interface ChangePasswordData{
     userId: string;
     oldPassword: string;
@@ -268,3 +244,29 @@ export const useChangePassWordMutation = (): UseMutationResult<{message:string},
         }
     })
 }
+
+// 프로필 사진 변경 mutation
+export const useProfileImageMutation = (): UseMutationResult<{ fileUrl: string }, unknown, { userId: string, file: string }> => {
+    return useMutation({
+      mutationFn: async ({ userId, file }: { userId: string, file: string }) => {
+        const formData = new FormData();
+        formData.append('userId', userId);
+        
+        // File 객체 생성
+        const fileObj = new File([file], 'profile.jpg', { type: 'image/jpeg' });
+        formData.append('file', fileObj);
+  
+        formData.forEach((value, key) => {
+          console.log(key, value);
+        });
+  
+        const response = await axios.post(`${API_URL}/upload`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        return response.data;
+      },
+    });
+  };
