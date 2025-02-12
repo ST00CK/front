@@ -110,7 +110,7 @@ const SignUpPage = () => {
             const response = await emailCheckMutation.mutateAsync({ email, authCode: inputEmailCode });
             console.log("emailCheckMutation 호출 후");
             console.log("서버 응답:", response);
-            if (response.message === "인증이 성공적으로 완료되었습니다.") {
+            if (response === "인증이 성공적으로 완료되었습니다.") {
                 setIsEmailVerified(true);
                 alert("이메일 인증이 완료되었습니다.");
             } else {
