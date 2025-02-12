@@ -8,6 +8,4 @@ RUN npm ci --only=production
 
 RUN mkdir -p /frontend/.expo && chmod -R 777 /frontend/.expo
 
-USER node
-
 CMD ["npm","start"]
