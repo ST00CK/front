@@ -1,4 +1,6 @@
-FROM node:20.16.0
+FROM node:20.16.0-slim
+
+USER root
 
 WORKDIR /frontend
 
