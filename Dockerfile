@@ -10,8 +10,4 @@ COPY . .
 
 RUN mkdir -p /frontend/.expo
 
-ENV EXPO_HOME=/frontend/.expo
-ENV HOME=/frontend
-ENV PORT=3000
-
 CMD ["npm","start"]
