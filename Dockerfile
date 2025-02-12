@@ -8,9 +8,10 @@ RUN npm ci --only=production
 
 COPY . .
 
-RUN mkdir -p /frontend/.expo && chown -R node:node /frontend/.expo
+RUN mkdir -p /frontend/.expo && chown -R node:node /frontend
 
 ENV EXPO_HOME=/frontend/.expo
+ENV HOME=/frontend
 ENV PORT=3000
 
 USER node
