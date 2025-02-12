@@ -8,6 +8,11 @@ RUN npm ci --only=production
 
 COPY . .
 
-RUN mkdir -p /frontend/.expo && chmod -R 777 /frontend/.expo
+RUN mkdir -p /frontend/.expo && chown -R node:node /frontend/.expo
+
+ENV EXPO_HOME=/frontend/.expo
+ENV PORT=3000
+
+USER node
 
 CMD ["npm","start"]
