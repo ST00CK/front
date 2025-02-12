@@ -1,13 +1,11 @@
 FROM node:20.16.0-slim
 
-USER root
-
 WORKDIR /frontend
 
-COPY . .
+COPY package.json package-lock.json ./
 
-RUN npm cache clean --force
+RUN npm ci --only=production
 
-RUN npm install
+RUN mkdir -p /frontend/.expo && chmood -R 777 /frontend/.expo
 
 CMD ["npm","start"]
