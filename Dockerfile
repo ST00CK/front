@@ -8,4 +8,4 @@ RUN npm cache clean --force
 
 RUN npm install
 
-CMD ["npm","run","dev"]
+CMD ["npm","run"]
