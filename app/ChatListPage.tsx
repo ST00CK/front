@@ -3,7 +3,6 @@ import { View, TextInput, Animated, ScrollView } from 'react-native';
 import ChatRoom from '../components/stoock/ChatList/ChatRoom';
 import ChatLogo from '../components/stoock/ChatList/ChatLogo';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
-import PlusIcon from '../components/stoock/Common/PlusIcon';
 import BottomTab from '../components/stoock/Common/BottomTab';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styles from '../styles/ChatListPageStyles';
@@ -62,7 +61,6 @@ const ChatListPage = () => {
                     <ChatLogo />
                 </View>
                 <View style={styles.header}>
-                    <PlusIcon onShowInput={navigateToChatAddPage} />
                     <SearchIcon onPress={handleShowInput} />
                 </View>
                 {showInput && (
