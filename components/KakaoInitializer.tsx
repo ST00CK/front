@@ -4,7 +4,7 @@ import { View, Text, Platform } from 'react-native';
 const KakaoInitializer: React.FC = () => {
   const [kakaoInitialized, setKakaoInitialized] = useState(false);
 
-  const API_KEY = process.env.REACT_APP_STOOCK_KAKAO_API_KEY;
+  const API_KEY = process.env.EXPO_PUBLIC_STOOCK_KAKAO_API_KEY;
 
   useEffect(() => {
     // Expo Web 환경에서만 실행 (네이티브 환경에서는 window 객체가 없으므로)
