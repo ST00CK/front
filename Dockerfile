@@ -6,6 +6,8 @@ COPY package.json package-lock.json ./
 
 RUN npm ci --only=production
 
+COPY . .
+
 RUN mkdir -p /frontend/.expo && chmod -R 777 /frontend/.expo
 
 CMD ["npm","start"]
