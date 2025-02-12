@@ -6,8 +6,6 @@ COPY . .
 
 RUN npm cache clean --force
 
-RUN npm run postinstall
-
 RUN npm install
 
 CMD ["npm","run","dev"]
