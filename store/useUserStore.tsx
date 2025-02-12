@@ -25,7 +25,10 @@ export const useUserStore = create<UserStore, [["zustand/persist", UserStore]]>(
                 const user = state.user ? { ...state.user, ...updatedUser } : null;
                 return { user };
             }),
-            logout: () => set({ user: null }),
+            logout: () => {
+                set({ user: null });
+                localStorage.removeItem('user-storage');
+            },
             isLoggedIn: () => get().user !== null,
         }),
         {

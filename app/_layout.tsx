@@ -15,6 +15,7 @@ const Layout = () => {
                 }}
             >
                 <Stack.Screen name="LoginPage" />
+                <Stack.Screen name="PasswdChangePage" />
                 <Stack.Screen name="SignUpPage" />
                 <Stack.Screen name="ChatAddPage" />
                 <Stack.Screen name="ChatRoomPage" />

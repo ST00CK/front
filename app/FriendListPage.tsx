@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, ScrollView, TextInput, Animated } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
@@ -29,6 +29,12 @@ const FriendListPage = () => {
     const [filteredProfiles, setFilteredProfiles] = useState(profiles);
     const slideAnim = useRef(new Animated.Value(0)).current;
 
+    const { user } = useUserStore();
+
+    useEffect(() => {
+        console.log('User information:', user);
+    }, [user]);
+
     const navigateToMyPage = () => {
         navigation.navigate('MyPage');
     };
@@ -57,8 +63,6 @@ const FriendListPage = () => {
         outputRange: [-50, 0],
     });
 
-    const { user } = useUserStore();
-
     return (
         <View style={styles.pageContainer}>
             <View style={styles.container}>
@@ -69,7 +73,6 @@ const FriendListPage = () => {
                 </View>
                 <View style={styles.largeProfile}>
                     <Profile
-                        // imageUrl="https://placehold.co/50"
                         imageUrl={user ? user.file : 'https://placehold.co/50'}
                         name={user ? user.name : 'Guest'}
                         imageSize={60}

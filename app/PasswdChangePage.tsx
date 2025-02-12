@@ -4,76 +4,34 @@ import { useNavigation } from 'expo-router';
 import Input from '../components/stoock/Common/Input';
 import ShortButton from '../components/stoock/Common/ShortButton';
 import StoockImage from '../assets/images/STOOCK!.png';
-import styles from '../styles/SignUpPageStyles';
+import styles from '../styles/PasswdChangePageStyles';
 import { NavigationProp } from '@react-navigation/native';
-import { useSignUpMutation, useEmailSendMutation, useEmailCheckMutation } from '../query/userQuery';
+import { useEmailSendMutation, useEmailCheckMutation, useChangePassWordMutation } from '../query/userQuery';
 
 type RootStackParamList = {
-    FriendListPage: undefined;
     LoginPage: undefined;
 };
 
-const SignUpPage = () => {
-    const [ID, setID] = useState('');
-    const [name, setName] = useState('');
+const PasswdChangePage = () => {
     const [email, setEmail] = useState('');
+    const [inputEmailCode, setInputEmailCode] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [inputEmailCode, setInputEmailCode] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isEmailVerified, setIsEmailVerified] = useState(false);
-    const [isSignUpDisabled, setIsSignUpDisabled] = useState(true);
     const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isEmailCodeVisible, setIsEmailCodeVisible] = useState(false);
     const [emailCodeSlideAnim] = useState(new Animated.Value(0));
+    const [passwordSlideAnim] = useState(new Animated.Value(0));
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-    const signUpMutation = useSignUpMutation();
     const emailSendMutation = useEmailSendMutation();
     const emailCheckMutation = useEmailCheckMutation();
-
-    useEffect(() => {
-        if (ID && name && email && password && confirmPassword && isEmailVerified) {
-            setIsSignUpDisabled(false);
-        } else {
-            setIsSignUpDisabled(true);
-        }
-    }, [ID, name, email, password, confirmPassword, isEmailVerified]);
+    const changePasswordMutation = useChangePassWordMutation();
 
     const navigateToLoginPage = () => {
         navigation.navigate('LoginPage');
-    };
-
-    const handleSignUp = async () => {
-        if (!isEmailVerified) {
-            setErrorMessage('이메일을 인증해주세요.');
-            setIsErrorModalVisible(true);
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            alert("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
-            return;
-        }
-
-        try {
-            await signUpMutation.mutateAsync({
-                userId: ID,
-                name: name,
-                email: email,
-                password: password,
-            });
-            setIsModalVisible(true);
-        } catch (error) {
-            console.error("회원가입 실패:", error);
-            alert("회원가입에 실패했습니다. 다시 시도해주세요.");
-        }
-    };
-
-    const handleModalSignUp = () => {
-        setIsModalVisible(false);
-        navigateToLoginPage();
     };
 
     const handleSendEmailCode = async () => {
@@ -95,8 +53,8 @@ const SignUpPage = () => {
                 }).start();
             }
         } catch (error) {
-            console.error("인증코드가 올바르지 않습니다:", error);
-            alert("인증코드가 올바르지 않습니다. 다시 시도해주세요.");
+            console.error("인증코드 발송 실패:", error);
+            alert("인증코드 발송에 실패했습니다. 다시 시도해주세요.");
         }
     };
 
@@ -106,20 +64,48 @@ const SignUpPage = () => {
             setIsErrorModalVisible(true);
             return;
         }
+
         try {
             const response = await emailCheckMutation.mutateAsync({ email, authCode: inputEmailCode });
-            console.log("emailCheckMutation 호출 후");
-            console.log("서버 응답:", response);
             if (response.message === "인증이 성공적으로 완료되었습니다.") {
                 setIsEmailVerified(true);
                 alert("이메일 인증이 완료되었습니다.");
+                Animated.timing(passwordSlideAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true,
+                }).start();
             } else {
                 alert("인증코드가 올바르지 않습니다. 다시 시도해주세요.");
             }
         } catch (error) {
-            console.error("인증코드가 올바르지 않습니다:", error);
-            alert("인증코드가 올바르지 않습니다. 다시 시도해주세요.");
+            console.error("인증코드 확인 실패:", error);
+            alert("인증코드 확인에 실패했습니다. 다시 시도해주세요.");
         }
+    };
+
+    const handleChangePassword = async () => {
+        if (password !== confirmPassword) {
+            alert("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+            return;
+        }
+
+        try {
+            await changePasswordMutation.mutateAsync({
+                userId: email,
+                oldPassword: '',
+                newPassword: password,
+            });
+            setIsModalVisible(true);
+        } catch (error) {
+            console.error("비밀번호 변경 실패:", error);
+            alert("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+        }
+    };
+
+    const handleModalClose = () => {
+        setIsModalVisible(false);
+        navigateToLoginPage();
     };
 
     const handleErrorModalClose = () => {
@@ -130,7 +116,7 @@ const SignUpPage = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.container}>
                 <Image source={StoockImage} style={styles.image} />
-                <Text style={styles.text}>회원가입</Text>
+                <Text style={styles.text}>비밀번호 변경</Text>
                 <View style={styles.inputContainer}>
                     <Input
                         placeholder="이메일"
@@ -167,49 +153,36 @@ const SignUpPage = () => {
                         </View>
                     </Animated.View>
                 )}
-                <View style={styles.inputContainer}>
-                    <Input
-                        placeholder="아이디"
-                        onChangeText={setID}
-                        value={ID}
-                        style={styles.input}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <Input
-                        placeholder="이름"
-                        onChangeText={setName}
-                        value={name}
-                        style={styles.input}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <Input
-                        placeholder="비밀번호"
-                        onChangeText={setPassword}
-                        value={password}
-                        secureTextEntry
-                        style={styles.input}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <Input
-                        placeholder="비밀번호 확인"
-                        onChangeText={setConfirmPassword}
-                        value={confirmPassword}
-                        secureTextEntry
-                        style={styles.input}
-                    />
-                </View>
-                <View style={styles.buttonContainer}>
-                    <ShortButton
-                        text="회원가입"
-                        onClick={handleSignUp}
-                        style={[styles.button, isSignUpDisabled && styles.disabledButton]}
-                        disabled={isSignUpDisabled}
-                    />
-                </View>
-
+                {isEmailVerified && (
+                    <Animated.View style={{ width: '80%', transform: [{ scaleY: passwordSlideAnim }] }}>
+                        <View style={styles.inputContainer}>
+                            <Input
+                                placeholder="새 비밀번호"
+                                onChangeText={setPassword}
+                                value={password}
+                                secureTextEntry
+                                style={styles.input}
+                            />
+                        </View>
+                        <View style={styles.inputContainer}>
+                            <Input
+                                placeholder="비밀번호 확인"
+                                onChangeText={setConfirmPassword}
+                                value={confirmPassword}
+                                secureTextEntry
+                                style={styles.input}
+                            />
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <ShortButton
+                                text="비밀번호 변경"
+                                onClick={handleChangePassword}
+                                style={[styles.button, (!password || !confirmPassword) && styles.disabledButton]}
+                                disabled={!password || !confirmPassword}
+                            />
+                        </View>
+                    </Animated.View>
+                )}
                 <Modal
                     visible={isModalVisible}
                     transparent={true}
@@ -217,12 +190,11 @@ const SignUpPage = () => {
                 >
                     <View style={styles.modalContainer}>
                         <View style={styles.modalContent}>
-                            <Text style={styles.modalText}>회원가입이 완료되었습니다.</Text>
-                            <ShortButton text="확인" onClick={handleModalSignUp} style={styles.button} />
+                            <Text style={styles.modalText}>비밀번호가 성공적으로 변경되었습니다.</Text>
+                            <ShortButton text="확인" onClick={handleModalClose} style={styles.button} />
                         </View>
                     </View>
                 </Modal>
-
                 <Modal
                     visible={isErrorModalVisible}
                     transparent={true}
@@ -240,4 +212,4 @@ const SignUpPage = () => {
     );
 };
 
-export default SignUpPage;
+export default PasswdChangePage;
