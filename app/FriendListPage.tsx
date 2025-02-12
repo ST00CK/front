@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, ScrollView, TextInput, Animated } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
-import PlusIcon from '../components/stoock/Common/PlusIcon';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
 import Setting from '../components/stoock/Common/Setting';
 import BottomTab from '../components/stoock/Common/BottomTab';
@@ -67,7 +66,6 @@ const FriendListPage = () => {
         <View style={styles.pageContainer}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <PlusIcon onShowInput={() => {}} />
                     <SearchIcon onPress={handleShowInput} />
                     <Setting onPress={navigateToSettingPage} />
                 </View>
