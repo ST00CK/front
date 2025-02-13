@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Platform } from 'react-native';
 import { useQuery, UseQueryResult, useMutation, UseMutationResult } from '@tanstack/react-query';
 import { useUserStore } from '../store/useUserStore';
 
@@ -224,8 +225,8 @@ export interface ChangePasswordData{
     oldPassword: string;
     newPassword: string;
 }
-//비밀번호 변경 mutation
-export const useChangePassWordMutation = (): UseMutationResult<{message:string}, unknown, ChangePasswordData> =>{
+//비밀번호 변경 mutation(로그인 후)
+export const useLogInChangePassWordMutation = (): UseMutationResult<{message:string}, unknown, ChangePasswordData> =>{
     return useMutation({
         mutationFn: async (data: ChangePasswordData) => {
             const response = await axios.post(`${API_URL}/change/password`,{
@@ -245,16 +246,45 @@ export const useChangePassWordMutation = (): UseMutationResult<{message:string},
     })
 }
 
-// 프로필 사진 변경 mutation
-export const useProfileImageMutation = (): UseMutationResult<{ fileUrl: string }, unknown, { userId: string, file: string }> => {
+//비밀번호 변경 mutation(로그인 전)
+export const useChangePassWordMutation = (): UseMutationResult<{message:string}, unknown, ChangePasswordData> =>{
     return useMutation({
-      mutationFn: async ({ userId, file }: { userId: string, file: string }) => {
+        mutationFn: async (data: ChangePasswordData) => {
+            const response = await axios.post(`${API_URL}/reset/password`,{
+                userId: data.userId,
+                newPassword: data.newPassword,
+            },
+                {
+                    withCredentials: true,
+                }
+            );
+            return response.data;
+        },
+        onSuccess:(data)=>{
+            
+        }
+    })
+}
+
+// 프로필 사진 변경 mutation
+export const useProfileImageMutation = (): UseMutationResult<{ fileUrl: string }, unknown, { userId: string, file: string| File | { uri: string; name: string; type: string; }; }> => {
+    return useMutation({
+      mutationFn: async ({ userId, file }: { userId: string, file: string| File | { uri: string; name: string; type: string; }; }) => {
         const formData = new FormData();
         formData.append('userId', userId);
         
         // File 객체 생성
-        const fileObj = new File([file], 'profile.jpg', { type: 'image/jpeg' });
-        formData.append('file', fileObj);
+        if(Platform.OS === "web"){
+            const fileObj = new File([file], 'profile.jpg', { type: 'image/jpeg' });
+            formData.append('file', fileObj);
+        } else{
+            formData.append('file', {
+                uri: typeof file === 'string' ? file : '', 
+                name: 'profile.jpg',
+                type: 'image/jpeg',
+              });
+        }
+        
   
         formData.forEach((value, key) => {
           console.log(key, value);
