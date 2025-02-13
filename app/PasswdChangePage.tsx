@@ -67,7 +67,7 @@ const PasswdChangePage = () => {
 
         try {
             const response = await emailCheckMutation.mutateAsync({ email, authCode: inputEmailCode });
-            if (response.message === "인증이 성공적으로 완료되었습니다.") {
+            if (response === "인증이 성공적으로 완료되었습니다.") {
                 setIsEmailVerified(true);
                 alert("이메일 인증이 완료되었습니다.");
                 Animated.timing(passwordSlideAnim, {
