@@ -19,8 +19,8 @@ const LoginPage = () => {
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
 
   const loginMutation = useLoginMutation();
   const kakaoLoginMutation = useKakaoLoginMutation();
@@ -37,22 +37,22 @@ const LoginPage = () => {
     navigation.navigate('PasswdChangePage');
   };
 
-  //폼 로그인 핸들
+  // 폼 로그인 핸들
   const handleLogin = async () => {
     try {
       await loginMutation.mutateAsync({
-        userId: email,
+        userId: userId,
         password: password,
-      })
+      });
 
       navigateToFriendList();
     } catch (error) {
       console.error("Login failed:", error);
       alert("Login failed. Please try again.");
     }
-  }
+  };
 
-  //카카오 로그인 핸들
+  // 카카오 로그인 핸들
   const handleKaKaoLogin = async () => {
     try {
       // Kakao 로그인 mutation 실행
@@ -69,7 +69,7 @@ const LoginPage = () => {
     <View style={styles.container}>
       <Image source={StoockImage} style={styles.image} />
       <Text style={styles.text}>로그인</Text>
-      <Input placeholder="이메일" style={styles.input} onChangeText={(text) => setEmail(text)} value={email} />
+      <Input placeholder="아이디" style={styles.input} onChangeText={(text) => setUserId(text)} value={userId} />
       <Input placeholder="비밀번호" style={styles.input} onChangeText={(text) => setPassword(text)} secureTextEntry value={password} />
       <View style={styles.buttonContainer}>
         <ShortButton text='로그인' onClick={handleLogin} style={[styles.button, { marginLeft: 0 }]} />
