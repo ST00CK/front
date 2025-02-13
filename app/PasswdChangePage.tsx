@@ -24,6 +24,8 @@ const PasswdChangePage = () => {
     const [isEmailCodeVisible, setIsEmailCodeVisible] = useState(false);
     const [emailCodeSlideAnim] = useState(new Animated.Value(0));
     const [passwordSlideAnim] = useState(new Animated.Value(0));
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const emailSendMutation = useEmailSendMutation();
@@ -85,8 +87,15 @@ const PasswdChangePage = () => {
     };
 
     const handleChangePassword = async () => {
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+        if (!specialCharRegex.test(password)) {
+            setPasswordError('비밀번호에 특수문자가 포함되어야 합니다.');
+            return;
+        }
+
         if (password !== confirmPassword) {
-            alert("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+            setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
             return;
         }
 
@@ -100,6 +109,23 @@ const PasswdChangePage = () => {
         } catch (error) {
             console.error("비밀번호 변경 실패:", error);
             alert("비밀번호 변경에 실패했습니다. 다시 시도해주세요.");
+        }
+    };
+
+    const handlePasswordBlur = () => {
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        if (!specialCharRegex.test(password)) {
+            setPasswordError('비밀번호에 특수문자가 포함되어야 합니다.');
+        } else {
+            setPasswordError('');
+        }
+    };
+
+    const handleConfirmPasswordBlur = () => {
+        if (password !== confirmPassword) {
+            setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
+        } else {
+            setConfirmPasswordError('');
         }
     };
 
@@ -154,7 +180,7 @@ const PasswdChangePage = () => {
                     </Animated.View>
                 )}
                 {isEmailVerified && (
-                    <Animated.View style={{ width: '80%', transform: [{ scaleY: passwordSlideAnim }] }}>
+                    <Animated.View style={{ width: '100%',justifyContent: 'center', alignItems: 'center', transform: [{ scaleY: passwordSlideAnim }] }}>
                         <View style={styles.inputContainer}>
                             <Input
                                 placeholder="새 비밀번호"
@@ -162,7 +188,9 @@ const PasswdChangePage = () => {
                                 value={password}
                                 secureTextEntry
                                 style={styles.input}
+                                onBlur={handlePasswordBlur}
                             />
+                            {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
                         </View>
                         <View style={styles.inputContainer}>
                             <Input
@@ -171,7 +199,9 @@ const PasswdChangePage = () => {
                                 value={confirmPassword}
                                 secureTextEntry
                                 style={styles.input}
+                                onBlur={handleConfirmPasswordBlur}
                             />
+                            {confirmPasswordError && <Text style={styles.errorText}>{confirmPasswordError}</Text>}
                         </View>
                         <View style={styles.buttonContainer}>
                             <ShortButton

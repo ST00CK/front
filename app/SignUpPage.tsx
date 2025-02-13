@@ -27,6 +27,8 @@ const SignUpPage = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isEmailCodeVisible, setIsEmailCodeVisible] = useState(false);
     const [emailCodeSlideAnim] = useState(new Animated.Value(0));
+    const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const signUpMutation = useSignUpMutation();
@@ -46,6 +48,12 @@ const SignUpPage = () => {
     };
 
     const handleSignUp = async () => {
+        if (!ID || !name || !email || !password || !confirmPassword) {
+            setErrorMessage('모든 필드를 입력해주세요.');
+            setIsErrorModalVisible(true);
+            return;
+        }
+
         if (!isEmailVerified) {
             setErrorMessage('이메일을 인증해주세요.');
             setIsErrorModalVisible(true);
@@ -53,8 +61,16 @@ const SignUpPage = () => {
         }
 
         if (password !== confirmPassword) {
-            alert("비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+            setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
             return;
+        }
+
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        if (!specialCharRegex.test(password)) {
+            setPasswordError('비밀번호에 특수문자가 포함되어야 합니다.');
+            return;
+        } else {
+            setPasswordError('');
         }
 
         try {
@@ -119,6 +135,23 @@ const SignUpPage = () => {
         } catch (error) {
             console.error("인증코드가 올바르지 않습니다:", error);
             alert("인증코드가 올바르지 않습니다. 다시 시도해주세요.");
+        }
+    };
+
+    const handlePasswordBlur = () => {
+        const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+        if (!specialCharRegex.test(password)) {
+            setPasswordError('비밀번호에 특수문자가 포함되어야 합니다.');
+        } else {
+            setPasswordError('');
+        }
+    };
+
+    const handleConfirmPasswordBlur = () => {
+        if (password !== confirmPassword) {
+            setConfirmPasswordError('비밀번호가 일치하지 않습니다.');
+        } else {
+            setConfirmPasswordError('');
         }
     };
 
@@ -190,7 +223,9 @@ const SignUpPage = () => {
                         value={password}
                         secureTextEntry
                         style={styles.input}
+                        onBlur={handlePasswordBlur}
                     />
+                    {passwordError && <Text style={styles.errorText}>{passwordError}</Text>}
                 </View>
                 <View style={styles.inputContainer}>
                     <Input
@@ -199,7 +234,9 @@ const SignUpPage = () => {
                         value={confirmPassword}
                         secureTextEntry
                         style={styles.input}
+                        onBlur={handleConfirmPasswordBlur}
                     />
+                    {confirmPasswordError && <Text style={styles.errorText}>{confirmPasswordError}</Text>}
                 </View>
                 <View style={styles.buttonContainer}>
                     <ShortButton
