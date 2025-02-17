@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, TextInput, Animated, ScrollView } from 'react-native';
+import { View, TextInput, Animated, ScrollView, Button } from 'react-native';
 import ChatRoom from '../components/stoock/ChatList/ChatRoom';
 import ChatLogo from '../components/stoock/ChatList/ChatLogo';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
 import BottomTab from '../components/stoock/Common/BottomTab';
+import ShortButton from '../components/stoock/Common/ShortButton';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styles from '../styles/ChatListPageStyles';
-import { useChatRoomListMutation } from '@/query/chatQuery';
+import { useChatRoomListMutation, useDeleteRoomMutation } from '@/query/chatQuery';
 import { useUserStore } from '@/store/useUserStore';
-const chatRoomListMutation = useChatRoomListMutation;
+
 
 type RootStackParamList = {
     ChatListPage: undefined;
@@ -23,6 +24,7 @@ const ChatListPage = () => {
     const [inputValue, setInputValue] = useState('');
     const { user } = useUserStore();
     const chatRoomListMutation = useChatRoomListMutation();
+    const deleteChatroomMutation = useDeleteRoomMutation();
     const [messages, setMessages] = useState([
         { id: 1, name: 'Ryan Reynolds', message: 'Hi', time: '10:00 AM', imageUrl: 'https://placehold.co/50' },
         { id: 2, name: 'Chris Evans', message: 'Hi', time: '10:01 AM', imageUrl: 'https://placehold.co/50' },
@@ -74,6 +76,19 @@ const ChatListPage = () => {
         outputRange: [-50, 0],
     });
 
+    //roomId 가져오는 로직 구현 필요
+    const handleDeleteChatroom = async() =>{
+        try{
+            const response = await deleteChatroomMutation.mutateAsync({
+                roomId:"dab82e8b-1fbe-4935-9268-dc6bc0955e83",
+                userId: user!.userId
+            });
+            console.log(response);
+        } catch(error){
+            alert("채팅방 삭제 오류")
+        }
+    }
+
     return (
         <View style={styles.pageContainer}>
             <View style={styles.container}>
@@ -96,6 +111,14 @@ const ChatListPage = () => {
                 <Animated.ScrollView style={[styles.chatRoomContainer, { transform: [{ translateY: slideDown }] }]}>
                     <ChatRoom name="Chat Room" messages={filteredMessages} />
                 </Animated.ScrollView>
+                <ShortButton
+                        text="채팅방생성"
+                        onClick={navigateToChatAddPage}
+                    />
+                <ShortButton
+                    text="채팅방삭제"
+                    onClick={handleDeleteChatroom}
+                />
             </View>
             <BottomTab currentPage="ChatListPage" />
         </View>

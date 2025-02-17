@@ -3,7 +3,9 @@ import { View, ScrollView, TextInput, Animated } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
+import ShortButton from '../components/stoock/Common/ShortButton';
 import styles from '../styles/ChatAddPageStyles';
+import { useChatRoomCreateMutation } from '@/query/chatQuery';
 
 type RootStackParamList = {
     ChatAddPage: undefined;
@@ -24,6 +26,7 @@ const ChatAddPage = () => {
     ]);
     const [filteredProfiles, setFilteredProfiles] = useState(profiles);
     const slideAnim = useRef(new Animated.Value(0)).current;
+    const createChatRoomMutation = useChatRoomCreateMutation();
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -51,6 +54,15 @@ const ChatAddPage = () => {
             profile.name.toLowerCase().includes(inputValue.toLowerCase())
         ));
     };
+
+    //UserId 채팅방 이름 가져오는 로직 구현 필요
+    const handleCreateChatRoom = async () => {
+        const response = await createChatRoomMutation.mutateAsync({
+            roomName: "testroom",
+            userId: ["htb010630@naver.com"]            
+        });
+        alert(response);
+    }
 
     return (
         <View style={styles.container}>
@@ -81,6 +93,10 @@ const ChatAddPage = () => {
                     />
                 ))}
             </ScrollView>
+            <ShortButton
+                        text="채팅방생성"
+                        onClick={handleCreateChatRoom}
+                    />
         </View>
     );
 };

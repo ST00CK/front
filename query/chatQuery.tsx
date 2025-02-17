@@ -42,10 +42,40 @@ interface CreateRoomResponse {
 export const useChatRoomCreateMutation = (): UseMutationResult<CreateRoomResponse, unknown, CreateChatRoom , unknown> =>{
     return useMutation({
         mutationFn: async(createRoomData: CreateChatRoom) =>{
-            const response = await axios.post(`${API_URL}/api/chatroom/create`, {
+            console.log(createRoomData);
+            const response = await axios.post(`${API_URL}/api/chatroom/create`,
                 createRoomData
+            ,{
+                headers: {
+                    'Content-Type': 'application/json',
+                  },
             })
             return response;
+        },
+        onSuccess(data){
+            console.log(data);
+            alert("채팅방 생성 완료")
+        }
+    })
+}
+
+interface DeleteRoomData{
+    roomId:string,
+    userId:string
+}
+
+//채팅방 삭제(개발자 모드 네트워크에서 CORS에러 뜨는데 로그 확인 필요....ㅠㅠ)
+export const useDeleteRoomMutation = () : UseMutationResult<string, unknown, DeleteRoomData , unknown> => {
+    return useMutation({
+        mutationFn: async(deleteRoomdata:DeleteRoomData) =>{
+            const response = await axios.delete(`${API_URL}/api/chatroom/exit`,{
+                data: deleteRoomdata,
+            });
+            return response;
+        },
+        onSuccess(data){
+            console.log(data);
+            alert("채팅방 삭제")
         }
     })
 }
