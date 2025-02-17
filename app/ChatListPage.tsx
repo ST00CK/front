@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput, Animated, ScrollView } from 'react-native';
 import ChatRoom from '../components/stoock/ChatList/ChatRoom';
 import ChatLogo from '../components/stoock/ChatList/ChatLogo';
@@ -6,6 +6,9 @@ import SearchIcon from '../components/stoock/Common/SearchIcon';
 import BottomTab from '../components/stoock/Common/BottomTab';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styles from '../styles/ChatListPageStyles';
+import { useChatRoomListMutation } from '@/query/chatQuery';
+import { useUserStore } from '@/store/useUserStore';
+const chatRoomListMutation = useChatRoomListMutation;
 
 type RootStackParamList = {
     ChatListPage: undefined;
@@ -18,6 +21,8 @@ const ChatListPage = () => {
     const navigation = useNavigation<NavigationProps>();
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
+    const { user } = useUserStore();
+    const chatRoomListMutation = useChatRoomListMutation();
     const [messages, setMessages] = useState([
         { id: 1, name: 'Ryan Reynolds', message: 'Hi', time: '10:00 AM', imageUrl: 'https://placehold.co/50' },
         { id: 2, name: 'Chris Evans', message: 'Hi', time: '10:01 AM', imageUrl: 'https://placehold.co/50' },
@@ -26,6 +31,21 @@ const ChatListPage = () => {
     ]);
     const [filteredMessages, setFilteredMessages] = useState(messages);
     const slideAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const fetchChatList = async () => {
+          if (!user?.userId) return;
+        
+          try {
+            const response = await chatRoomListMutation.mutateAsync(user.userId);
+            console.log('Chat list response:', response);
+          } catch (error) {
+            console.error('Error fetching chat list:', error);
+          }
+        };
+      
+        fetchChatList();
+      }, [user]);
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
