@@ -54,6 +54,46 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  passwordChangeButton: {
+    marginTop: 20,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: 'blue',
+  },
+  passwordChangeButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  passwordChangeContainer: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+  },
+  passwordInput: {
+    marginVertical: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+  },
+  passwordSubmitButton: {
+    marginTop: 10,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: 'blue',
+  },
+  passwordSubmitButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
+  },
 });
 
 export default styles;
