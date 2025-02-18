@@ -218,7 +218,7 @@ const SignUpPage = () => {
                 </View>
                 <View style={styles.inputContainer}>
                     <Input
-                        placeholder="비밀번호"
+                        placeholder="비밀번호 ( 특수문자 필수 포함 )"
                         onChangeText={setPassword}
                         value={password}
                         secureTextEntry
