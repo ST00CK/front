@@ -15,8 +15,6 @@ function transformRoomData(room: { room_id: string; room_name: string }): Room {
       name: room.room_name,
     };
   }
-  
-
 
 //채팅방 리스트
 export const useChatRoomListMutation = (): UseMutationResult<MutationResult, unknown, { userId: string} , unknown> =>{
@@ -71,6 +69,7 @@ export const useChatRoomCreateMutation = (): UseMutationResult<CreateRoomRespons
     })
 }
 
+//방 삭제 데이터타입
 interface DeleteRoomData{
     roomId:string,
     userId:string
@@ -88,6 +87,88 @@ export const useDeleteRoomMutation = () : UseMutationResult<string, unknown, Del
         onSuccess(data){
             console.log(data);
             alert("채팅방 삭제")
+        }
+    })
+}
+
+
+//채팅방 업데이트 데이터 타입
+interface ChatRoomUpdateData{
+    roomId:string,
+    roomName:string
+}
+
+//채팅방 이름 업데이트
+export const useChatRoomUpdateMutation = () : UseMutationResult<string, unknown, ChatRoomUpdateData, unknown> => {
+    return useMutation({
+        mutationFn: async(chatroomUpdatedata:ChatRoomUpdateData) =>{
+            const response = await axios.patch(`${API_URL}/api/chatroom/update`,
+                chatroomUpdatedata,
+                {
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            return response.data
+        },
+        onSuccess(data){
+            alert("채팅방 이름이 변경되었습니다.")
+            console.log(data)
+        }
+    })
+}
+
+
+//채팅방 초대 데이터 타입
+interface RoomJoinData{
+    roomId:string,
+    userId:string
+}
+
+//채팅방 초대
+export const useChatRoomJoinMutation = () : UseMutationResult<string, unknown, RoomJoinData, unknown> => {
+    return useMutation({
+        mutationFn: async(roomJoinData:RoomJoinData) =>{
+            const response = await axios.patch(`${API_URL}/api/chatroom/join`,
+                roomJoinData,
+                {
+                    headers:{
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            return response.data
+        },
+        onSuccess(data){
+            alert("초대를 완료했습니다.")
+            console.log(data)
+        }
+    })
+}
+
+interface ChatMessageDate {
+    message_id: string;
+    room_id: string;
+    user_id: string;
+    message: string;
+    timestamp: string;
+  }
+  
+
+//채팅방 로그 조회
+export const useChatRoomLogMutation = (): UseMutationResult<ChatMessageDate, unknown, { room_Id: string} , unknown> =>{
+    return useMutation({
+        mutationFn: async({ room_Id }) =>{
+            console.log("room_Id : " + room_Id);
+            const response = await axios.get(`${API_URL}/api/chatroom/log`, {
+                params: { roomId: room_Id },
+            })
+
+            return response.data;
+        },
+        onSuccess(data){
+            console.log(data);
         }
     })
 }
