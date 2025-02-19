@@ -121,17 +121,17 @@ export const useChatRoomUpdateMutation = () : UseMutationResult<string, unknown,
 
 
 //채팅방 초대 데이터 타입
-interface RoomJoinData{
+interface RoomInviteData{
     roomId:string,
     userId:string
 }
 
 //채팅방 초대
-export const useChatRoomJoinMutation = () : UseMutationResult<string, unknown, RoomJoinData, unknown> => {
+export const useChatRoomInviteMutation = () : UseMutationResult<string, unknown, RoomInviteData, unknown> => {
     return useMutation({
-        mutationFn: async(roomJoinData:RoomJoinData) =>{
-            const response = await axios.patch(`${API_URL}/api/chatroom/join`,
-                roomJoinData,
+        mutationFn: async(roomInviteData:RoomInviteData) =>{
+            const response = await axios.post(`${API_URL}/api/chatroom/invite`,
+                roomInviteData,
                 {
                     headers:{
                         'Content-Type': 'application/json',

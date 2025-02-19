@@ -7,7 +7,7 @@ import BottomTab from '../components/stoock/Common/BottomTab';
 import ShortButton from '../components/stoock/Common/ShortButton';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styles from '../styles/ChatListPageStyles';
-import { useChatRoomListMutation, useDeleteRoomMutation, useChatRoomJoinMutation, useChatRoomUpdateMutation, useChatRoomLogMutation } from '@/query/chatQuery';
+import { useChatRoomListMutation, useDeleteRoomMutation, useChatRoomInviteMutation, useChatRoomUpdateMutation, useChatRoomLogMutation } from '@/query/chatQuery';
 import { useUserStore } from '@/store/useUserStore';
 
 
@@ -25,7 +25,7 @@ const ChatListPage = () => {
     const { user } = useUserStore();
     const chatRoomListMutation = useChatRoomListMutation();
     const deleteChatroomMutation = useDeleteRoomMutation();
-    const chatRoomJoinMutation = useChatRoomJoinMutation();
+    const chatRoomInviteMutation = useChatRoomInviteMutation();
     const chatRoomUpdateMutation = useChatRoomUpdateMutation();
     const chatRoomLogMutation = useChatRoomLogMutation();
     const [messages, setMessages] = useState([ ]);
@@ -103,9 +103,9 @@ const ChatListPage = () => {
     }
 
     //채팅방 초대(친구 없어서 테스트 못하는중..)
-    const handleChatRoomJoin = async() =>{
+    const handleChatRoomInvite = async() =>{
         try{
-            const response = await chatRoomJoinMutation.mutateAsync({
+            const response = await chatRoomInviteMutation.mutateAsync({
                 roomId:"381f5c60-8ec5-4864-9d3e-705f23a8806f",
                 userId:"친구 아이디!!"
             });
@@ -176,7 +176,7 @@ const ChatListPage = () => {
                 />
                 <ShortButton
                     text="채팅방 초대"
-                    onClick={handleChatRoomJoin}
+                    onClick={handleChatRoomInvite}
                 />
                 <ShortButton
                     text="채팅방 로그"
