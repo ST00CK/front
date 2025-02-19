@@ -25,12 +25,7 @@ const ChatListPage = () => {
     const { user } = useUserStore();
     const chatRoomListMutation = useChatRoomListMutation();
     const deleteChatroomMutation = useDeleteRoomMutation();
-    const [messages, setMessages] = useState([
-        { id: 1, name: 'Ryan Reynolds', message: 'Hi', time: '10:00 AM', imageUrl: 'https://placehold.co/50' },
-        { id: 2, name: 'Chris Evans', message: 'Hi', time: '10:01 AM', imageUrl: 'https://placehold.co/50' },
-        { id: 3, name: 'Scarlett Johansson', message: 'Hi', time: '10:02 AM', imageUrl: 'https://placehold.co/50' },
-        { id: 4, name: 'Robert Downey Jr.', message: 'Hi', time: '10:03 AM', imageUrl: 'https://placehold.co/50' },
-    ]);
+    const [messages, setMessages] = useState([ ]);
     const [filteredMessages, setFilteredMessages] = useState(messages);
     const slideAnim = useRef(new Animated.Value(0)).current;
 
@@ -41,6 +36,17 @@ const ChatListPage = () => {
           try {
             const response = await chatRoomListMutation.mutateAsync(user.userId);
             console.log('Chat list response:', response);
+
+            const updatedMessages = response.map((room: any) => ({
+                id: room.id,
+                name: room.name,
+                message: '', 
+                time: '',
+                imageUrl: 'https://placehold.co/50',
+              }));
+
+            setMessages(updatedMessages);
+            setFilteredMessages(updatedMessages);
           } catch (error) {
             console.error('Error fetching chat list:', error);
           }
