@@ -55,7 +55,7 @@ const ChatAddPage = () => {
         ));
     };
 
-    //UserId 채팅방 이름 가져오는 로직 구현 필요
+    //채팅방 생성(작동)
     const handleCreateChatRoom = async () => {
         const response = await createChatRoomMutation.mutateAsync({
             roomName: "testroom",

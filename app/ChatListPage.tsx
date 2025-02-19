@@ -7,7 +7,7 @@ import BottomTab from '../components/stoock/Common/BottomTab';
 import ShortButton from '../components/stoock/Common/ShortButton';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import styles from '../styles/ChatListPageStyles';
-import { useChatRoomListMutation, useDeleteRoomMutation } from '@/query/chatQuery';
+import { useChatRoomListMutation, useDeleteRoomMutation, useChatRoomJoinMutation, useChatRoomUpdateMutation, useChatRoomLogMutation } from '@/query/chatQuery';
 import { useUserStore } from '@/store/useUserStore';
 
 
@@ -25,10 +25,15 @@ const ChatListPage = () => {
     const { user } = useUserStore();
     const chatRoomListMutation = useChatRoomListMutation();
     const deleteChatroomMutation = useDeleteRoomMutation();
+    const chatRoomJoinMutation = useChatRoomJoinMutation();
+    const chatRoomUpdateMutation = useChatRoomUpdateMutation();
+    const chatRoomLogMutation = useChatRoomLogMutation();
     const [messages, setMessages] = useState([ ]);
     const [filteredMessages, setFilteredMessages] = useState(messages);
     const slideAnim = useRef(new Animated.Value(0)).current;
+    const [refreshFlag, setRefreshFlag] = useState(0);
 
+    //채팅방 조회
     useEffect(() => {
         const fetchChatList = async () => {
           if (!user?.userId) return;
@@ -53,7 +58,8 @@ const ChatListPage = () => {
         };
       
         fetchChatList();
-      }, [user]);
+      }, [user,refreshFlag]);
+
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -82,16 +88,55 @@ const ChatListPage = () => {
         outputRange: [-50, 0],
     });
 
-    //roomId 가져오는 로직 구현 필요
+    //채팅방 나가기(작동)
     const handleDeleteChatroom = async() =>{
         try{
             const response = await deleteChatroomMutation.mutateAsync({
-                roomId:"dab82e8b-1fbe-4935-9268-dc6bc0955e83",
+                roomId:"b419d3b4-53e3-4ff7-b9b8-4d3fcd39ae08",
                 userId: user!.userId
             });
             console.log(response);
+            setRefreshFlag(prev => prev + 1);//이벤트 발생시 useeffect다시 실행(채팅방 최신화?)
         } catch(error){
             alert("채팅방 삭제 오류")
+        }
+    }
+
+    //채팅방 초대(친구 없어서 테스트 못하는중..)
+    const handleChatRoomJoin = async() =>{
+        try{
+            const response = await chatRoomJoinMutation.mutateAsync({
+                roomId:"381f5c60-8ec5-4864-9d3e-705f23a8806f",
+                userId:"친구 아이디!!"
+            });
+            console.log(response);
+        } catch(error){
+            alert("초대 오류")
+        }
+    }
+
+    //채팅방 업데이트(작동)
+    const handleChatRoomUpdate = async() =>{
+        try{
+            const response = await chatRoomUpdateMutation.mutateAsync({
+                roomId:"b419d3b4-53e3-4ff7-b9b8-4d3fcd39ae08",
+                roomName:"삭제 예정123"
+            });
+            console.log(response);
+            setRefreshFlag(prev => prev + 1); //
+        } catch(error){
+            alert("초대 오류")
+        }
+    }
+
+    //채팅방 로그 조회(작동)
+    const handleChatRoomLog = async() =>{
+        try{
+            const response = await chatRoomLogMutation.mutateAsync({
+                room_Id:"9458fa1d-e5bd-4fe3-9844-6d348a6c3d85",
+            });
+        } catch(error){
+            alert("로그 조회 오류")
         }
     }
 
@@ -124,6 +169,18 @@ const ChatListPage = () => {
                 <ShortButton
                     text="채팅방삭제"
                     onClick={handleDeleteChatroom}
+                />
+                <ShortButton
+                    text="채팅방 업데이트"
+                    onClick={handleChatRoomUpdate}
+                />
+                <ShortButton
+                    text="채팅방 초대"
+                    onClick={handleChatRoomJoin}
+                />
+                <ShortButton
+                    text="채팅방 로그"
+                    onClick={handleChatRoomLog}
                 />
             </View>
             <BottomTab currentPage="ChatListPage" />
