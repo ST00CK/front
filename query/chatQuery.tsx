@@ -3,9 +3,19 @@ import axios from 'axios';
 
 const API_URL = process.env.EXPO_PUBLIC_STOOCK_CHAT_API_URL
 
-interface ChatRoomList{
-    room : string[];
+interface Room {
+    id: string;
+    name: string;
 }
+
+//채팅방 리스트 컬럼명? 수정함수
+function transformRoomData(room: { room_id: string; room_name: string }): Room {
+    return {
+      id: room.room_id,
+      name: room.room_name,
+    };
+  }
+  
 
 
 //채팅방 리스트
@@ -16,7 +26,9 @@ export const useChatRoomListMutation = (): UseMutationResult<MutationResult, unk
             const response = await axios.get(`${API_URL}/api/chatroom/list`, {
                 params: { userId }
             })
-            return response.data;
+            const transformRoomDatas: Room[] = response.data.map(transformRoomData);
+
+            return transformRoomDatas;
         },
         onSuccess(data){
             console.log(data);
