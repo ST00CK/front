@@ -1,6 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    settingIcon: {
+        padding: 10,
+    },
     container: {
         flex: 1,
     },
@@ -49,6 +52,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
+    },
+    panelFooter: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderTopWidth: 1,
+        borderTopColor: '#ccc',
     },
     settingsButton: {
         marginTop: 10,

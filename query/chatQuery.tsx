@@ -1,7 +1,7 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import axios from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_STOOCK_CHAT_API_URL
+const API_URL = `${process.env.EXPO_PUBLIC_STOOCK_API_URL}/chat`;
 
 interface Room {
     id: string;
