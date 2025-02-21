@@ -1,23 +1,35 @@
-import React, { useState, useRef } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, Animated, TouchableOpacity } from 'react-native';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, ScrollView, KeyboardAvoidingView, Platform, Text, TextInput, Animated, TouchableOpacity, Modal } from 'react-native';
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import Chat from '../components/stoock/ChatRoom/Chat';
 import ChatInput from '../components/stoock/ChatRoom/ChatInput';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
 import ListIcon from '../components/stoock/ChatRoom/List';
 import Profile from '../components/stoock/Common/Profile';
-import Setting from '../components/stoock/Common/Setting';
+import ExitIcon from '../components/stoock/ChatRoom/ExitIcon';
+import ChatSetting from '../components/stoock/ChatRoom/ChatSetting';
+import { FontAwesome } from '@expo/vector-icons';
 import styles from '../styles/ChatRoomPageStyles';
+import { useDeleteRoomMutation } from '../query/chatQuery';
+import { useUserStore } from '@/store/useUserStore';
 
 type RootStackParamList = {
-    ChatRoomPage: { name: string };
+    ChatRoomPage: { name: string; roomId: string };
+    ChatListPage: { refresh?: boolean };
 };
 
 type ChatRoomPageRouteProp = RouteProp<RootStackParamList, 'ChatRoomPage'>;
 
 const ChatRoomPage = () => {
     const route = useRoute<ChatRoomPageRouteProp>();
-    const { name } = route.params;
+    const { name, roomId } = route.params;
+    const navigation = useNavigation();
+    const { user } = useUserStore();
+
+    useEffect(() => {
+        console.log('User:', user);
+        console.log('Room ID:', roomId);
+    }, [user, roomId]);
 
     const [messages, setMessages] = useState([
         {
@@ -65,9 +77,12 @@ const ChatRoomPage = () => {
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [isPanelVisible, setIsPanelVisible] = useState(false);
+    const [isSettingVisible, setIsSettingVisible] = useState(false);
     const slideAnim = useRef(new Animated.Value(0)).current;
     const panelAnim = useRef(new Animated.Value(0)).current;
     const overlayOpacity = useRef(new Animated.Value(0)).current;
+
+    const deleteRoomMutation = useDeleteRoomMutation();
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -114,6 +129,28 @@ const ChatRoomPage = () => {
                 useNativeDriver: true,
             }),
         ]).start();
+    };
+
+    const handleExit = () => {
+        if (user?.userId && roomId) {
+            setIsPanelVisible(false);
+            deleteRoomMutation.mutate({ roomId, userId: user.userId }, {
+                onSuccess: () => {
+                    navigation.navigate('ChatListPage', { refresh: true });
+                },
+            });
+        } else {
+            alert("유효하지 않은 사용자 또는 채팅방 ID입니다.");
+        }
+    };
+
+    const handleSettingPress = () => {
+        setIsPanelVisible(false);
+        setIsSettingVisible(true);
+    };
+
+    const handleSettingClose = () => {
+        setIsSettingVisible(false);
     };
 
     const slideDown = slideAnim.interpolate({
@@ -187,26 +224,46 @@ const ChatRoomPage = () => {
                 })}
             </ScrollView>
             <ChatInput onSend={handleSend} />
-            {isPanelVisible && (
-                <Animated.View style={overlayStyle}>
+            <Modal
+                visible={isPanelVisible}
+                transparent={true}
+                animationType="none"
+                onRequestClose={togglePanel}
+            >
+                <Animated.View style={[styles.overlay, overlayStyle]}>
                     <TouchableOpacity style={{ flex: 1 }} onPress={togglePanel} />
                 </Animated.View>
-            )}
-            <Animated.View style={[styles.panel, { transform: [{ translateX: panelTranslateX }] }]}>
-                <Text style={styles.panelTitle}>Participants</Text>
-                <ScrollView>
-                    {uniqueProfiles.map((profile, index) => (
-                        <Profile
-                            key={index}
-                            name={profile?.name || ''}
-                            imageUrl={profile?.profileImage || ''}
-                            imageSize={40}
-                            textSize={14}
-                        />
-                    ))}
-                </ScrollView>
-                <Setting onPress={() => { /* 설정 버튼 클릭 시 동작 */ }} />
-            </Animated.View>
+                <Animated.View style={[styles.panel, { transform: [{ translateX: panelTranslateX }] }]}>
+                    <Text style={styles.panelTitle}>Participants</Text>
+                    <ScrollView>
+                        {uniqueProfiles.map((profile, index) => (
+                            <Profile
+                                key={index}
+                                name={profile?.name || ''}
+                                imageUrl={profile?.profileImage || ''}
+                                imageSize={40}
+                                textSize={14}
+                            />
+                        ))}
+                    </ScrollView>
+                    <View style={styles.panelFooter}>
+                        <ExitIcon onPress={handleExit} />
+                        <TouchableOpacity onPress={handleSettingPress} style={styles.settingIcon}>
+                            <FontAwesome name="cog" size={24} color="black" />
+                        </TouchableOpacity>
+                    </View>
+                </Animated.View>
+            </Modal>
+            <ChatSetting
+                isVisible={isSettingVisible}
+                onClose={handleSettingClose}
+                roomId={roomId}
+                roomName={name}
+                participants={uniqueProfiles.map(profile => ({
+                    name: profile?.name || '',
+                    profileImage: profile?.profileImage || '',
+                }))}
+            />
         </KeyboardAvoidingView>
     );
 };

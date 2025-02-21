@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { useQuery, UseQueryResult, useMutation, UseMutationResult } from '@tanstack/react-query';
 import { useUserStore } from '../store/useUserStore';
 
-const API_URL = process.env.EXPO_PUBLIC_STOOCK_USER_API_URL;
+const API_URL = `${process.env.EXPO_PUBLIC_STOOCK_API_URL}/user`;
 
 export interface User {
     id: number;

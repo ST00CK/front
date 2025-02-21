@@ -1,15 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { View, ScrollView, TextInput, Animated } from 'react-native';
+import { View, ScrollView, TextInput, Animated, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
-import ShortButton from '../components/stoock/Common/ShortButton';
 import styles from '../styles/ChatAddPageStyles';
 import { useChatRoomCreateMutation } from '@/query/chatQuery';
 
 type RootStackParamList = {
     ChatAddPage: undefined;
     ChatRoomPage: undefined;
+    ChatListPage: { refresh: boolean };
 };
 
 type NavigationProps = NavigationProp<RootStackParamList>;
@@ -57,46 +57,55 @@ const ChatAddPage = () => {
 
     //채팅방 생성(작동)
     const handleCreateChatRoom = async () => {
-        const response = await createChatRoomMutation.mutateAsync({
-            roomName: "testroom",
-            userId: ["htb010630@naver.com"]            
-        });
-        alert(response);
+        try {
+            const response = await createChatRoomMutation.mutateAsync({
+                roomName: "testroom",
+                userId: ["mkjack310"]
+            });
+            alert(response);
+            navigation.navigate('ChatListPage', { refresh: true });
+        } catch (error) {
+            alert("채팅방 생성 오류");
+        }
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <SearchIcon onPress={handleShowInput} />
+        <View style={styles.pageContainer}>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>대화상대 선택</Text>
+                    <SearchIcon onPress={handleShowInput} />
+                </View>
+                {showInput && (
+                    <Animated.View style={[styles.inputContainer, { transform: [{ translateY: slideAnim }] }]}>
+                        <TextInput
+                            style={styles.input}
+                            value={inputValue}
+                            onChangeText={handleInputChange}
+                            placeholder="Search Friends"
+                        />
+                    </Animated.View>
+                )}
+                <ScrollView style={styles.profileContainer}>
+                    {filteredProfiles.map(profile => (
+                        <Profile
+                            key={profile.id}
+                            name={profile.name}
+                            imageUrl={profile.imageUrl}
+                            imageSize={40}
+                            textSize={14}
+                            showCheck={true}
+                            isChecked={profile.isChecked}
+                            onCheck={() => handleCheck(profile.id)}
+                        />
+                    ))}
+                </ScrollView>
             </View>
-            {showInput && (
-                <Animated.View style={[styles.inputContainer, { transform: [{ translateY: slideAnim }] }]}>
-                    <TextInput
-                        style={styles.input}
-                        value={inputValue}
-                        onChangeText={handleInputChange}
-                        placeholder="Search Friends"
-                    />
-                </Animated.View>
-            )}
-            <ScrollView style={styles.profileContainer}>
-                {filteredProfiles.map(profile => (
-                    <Profile
-                        key={profile.id}
-                        name={profile.name}
-                        imageUrl={profile.imageUrl}
-                        imageSize={40}
-                        textSize={14}
-                        showCheck={true}
-                        isChecked={profile.isChecked}
-                        onCheck={() => handleCheck(profile.id)}
-                    />
-                ))}
-            </ScrollView>
-            <ShortButton
-                        text="채팅방생성"
-                        onClick={handleCreateChatRoom}
-                    />
+            <View style={styles.footer}>
+                <TouchableOpacity style={styles.confirmButton} onPress={handleCreateChatRoom}>
+                    <Text style={styles.confirmButtonText}>확인</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };
