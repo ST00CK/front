@@ -34,6 +34,23 @@ export const useUsersQuery = (): UseQueryResult<User[], unknown> => {
     return queryResult;
 };
 
+// 특정 사용자 정보 조회
+export const fetchUserById = async (userId: string): Promise<User> => {
+    const response = await axios.get(`${API_URL}/find/user`, {
+        params: { userId }
+    });
+    console.log('Fetched user:', response.data); // 사용자 정보를 콘솔에 출력하여 확인
+    return response.data;
+};
+
+// 특정 사용자 정보를 조회하는 React Query 훅
+export const useUserQuery = (userId: string): UseQueryResult<User, unknown> => {
+    return useQuery<User, unknown>({
+        queryKey: ['user', userId],
+        queryFn: () => fetchUserById(userId),
+    });
+};
+
 // 로그아웃 함수
 export const useLogout = () => {
     const { logout } = useUserStore();

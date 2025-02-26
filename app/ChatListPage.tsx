@@ -10,6 +10,7 @@ import { useNavigation, NavigationProp, useRoute, RouteProp } from '@react-navig
 import styles from '../styles/ChatListPageStyles';
 import { useChatRoomListMutation, useDeleteRoomMutation, useChatRoomInviteMutation, useChatRoomUpdateMutation, useChatRoomLogMutation } from '@/query/chatQuery';
 import { useUserStore } from '@/store/useUserStore';
+import { useChatRoomMembersMutation } from '@/query/chatQuery';
 
 type RootStackParamList = {
     ChatListPage: { refresh?: boolean };
@@ -27,6 +28,7 @@ const ChatListPage = () => {
     const [inputValue, setInputValue] = useState('');
     const { user } = useUserStore();
     const chatRoomListMutation = useChatRoomListMutation();
+    const chatRoomMembersMutation = useChatRoomMembersMutation();
     const deleteChatroomMutation = useDeleteRoomMutation();
     const chatRoomInviteMutation = useChatRoomInviteMutation();
     const chatRoomUpdateMutation = useChatRoomUpdateMutation();
@@ -35,6 +37,15 @@ const ChatListPage = () => {
     const [filteredMessages, setFilteredMessages] = useState(messages);
     const slideAnim = useRef(new Animated.Value(0)).current;
     const [refreshFlag, setRefreshFlag] = useState(0);
+
+    const fetchChatRoomMembers = async (roomId: string) => {
+        try {
+            const response = await chatRoomMembersMutation.mutateAsync({ roomId });
+            console.log(`Room ID: ${roomId}, Members:`, response.userId);
+        } catch (error) {
+            console.error('Error fetching chat room members:', error);
+        }
+    };
 
     //채팅방 조회
     useEffect(() => {
@@ -45,17 +56,25 @@ const ChatListPage = () => {
                 const response = await chatRoomListMutation.mutateAsync(user.userId);
                 console.log('Chat list response:', response);
 
-                const updatedMessages = response.map((room: any) => ({
-                    id: room.id,
-                    name: room.name,
-                    message: '',
-                    time: '',
-                    imageUrl: 'https://placehold.co/50',
-                    roomId: room.id,
-                }));
+                const updatedMessages = response.map((room: any) => {
+                    const roomMembers = room.name.split(',').filter((name: string) => name !== user.name);
+                    const roomName = roomMembers.join(',');
+
+                    return {
+                        id: room.id,
+                        name: roomName,
+                        message: '',
+                        time: '',
+                        imageUrl: 'https://placehold.co/50',
+                        roomId: room.id,
+                        userId: user.userId,
+                    };
+                });
 
                 setMessages(updatedMessages);
                 setFilteredMessages(updatedMessages);
+
+                updatedMessages.forEach(room => fetchChatRoomMembers(room.roomId));
             } catch (error) {
                 console.error('Error fetching chat list:', error);
             }
@@ -90,34 +109,7 @@ const ChatListPage = () => {
         inputRange: [0, 1],
         outputRange: [-50, 0],
     });
-
-    //채팅방 초대(친구 없어서 테스트 못하는중..)
-    const handleChatRoomInvite = async () => {
-        try {
-            const response = await chatRoomInviteMutation.mutateAsync({
-                roomId: "381f5c60-8ec5-4864-9d3e-705f23a8806f",
-                userId: "친구 아이디!!"
-            });
-            console.log(response);
-        } catch (error) {
-            alert("초대 오류")
-        }
-    }
-
-    //채팅방 업데이트(작동)
-    const handleChatRoomUpdate = async () => {
-        try {
-            const response = await chatRoomUpdateMutation.mutateAsync({
-                roomId: "b419d3b4-53e3-4ff7-b9b8-4d3fcd39ae08",
-                roomName: "삭제 예정123"
-            });
-            console.log(response);
-            setRefreshFlag(prev => prev + 1); //
-        } catch (error) {
-            alert("초대 오류")
-        }
-    }
-
+    
     //채팅방 로그 조회(작동)
     const handleChatRoomLog = async () => {
         try {
@@ -152,14 +144,6 @@ const ChatListPage = () => {
                 <Animated.ScrollView style={[styles.chatRoomContainer, { transform: [{ translateY: slideDown }] }]}>
                     <ChatRoom name="Chat Room" messages={filteredMessages} />
                 </Animated.ScrollView>
-                <ShortButton
-                    text="채팅방 업데이트"
-                    onClick={handleChatRoomUpdate}
-                />
-                <ShortButton
-                    text="채팅방 초대"
-                    onClick={handleChatRoomInvite}
-                />
                 <ShortButton
                     text="채팅방 로그"
                     onClick={handleChatRoomLog}

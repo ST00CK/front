@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, ScrollView, TextInput, Animated, Text, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Profile from '../components/stoock/Common/Profile';
 import SearchIcon from '../components/stoock/Common/SearchIcon';
 import styles from '../styles/ChatAddPageStyles';
 import { useChatRoomCreateMutation } from '@/query/chatQuery';
+import { useFriendShipListMutation } from '@/query/friendQuery';
+import { useUserStore } from '@/store/useUserStore';
 
 type RootStackParamList = {
     ChatAddPage: undefined;
@@ -12,21 +14,47 @@ type RootStackParamList = {
     ChatListPage: { refresh: boolean };
 };
 
+interface ProfileType {
+    id: number;
+    name: string;
+    imageUrl: string;
+    isChecked: boolean;
+}
+
 type NavigationProps = NavigationProp<RootStackParamList>;
 
 const ChatAddPage = () => {
     const navigation = useNavigation<NavigationProps>();
+    const { user } = useUserStore();
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
-    const [profiles, setProfiles] = useState([
-        { id: 1, name: 'Ryan Reynolds', imageUrl: 'https://via.placeholder.com/50', isChecked: false },
-        { id: 2, name: 'Emma Stone', imageUrl: 'https://via.placeholder.com/50', isChecked: false },
-        { id: 3, name: 'Chris Evans', imageUrl: 'https://via.placeholder.com/50', isChecked: false },
-        { id: 4, name: 'Scarlett Johansson', imageUrl: 'https://via.placeholder.com/50', isChecked: false },
-    ]);
-    const [filteredProfiles, setFilteredProfiles] = useState(profiles);
+    const [profiles, setProfiles] = useState<ProfileType[]>([]);
+    const [filteredProfiles, setFilteredProfiles] = useState<ProfileType[]>([]);
     const slideAnim = useRef(new Animated.Value(0)).current;
     const createChatRoomMutation = useChatRoomCreateMutation();
+    const friendShipListMutation = useFriendShipListMutation();
+
+    useEffect(() => {
+        const fetchFriendList = async () => {
+            try {
+                const response = await friendShipListMutation.mutateAsync(user!.userId);
+                console.log('Friend list response:', response); // 응답 데이터 확인
+                if (Array.isArray(response)) {
+                    const transformedResponse = response.map((user: any) => ({
+                        id: user.id, // id 필드가 올바르게 설정되었는지 확인
+                        name: user.name,
+                        imageUrl: user.imageUrl,
+                        isChecked: false,
+                    }));
+                    setProfiles(transformedResponse);
+                    setFilteredProfiles(transformedResponse);
+                }
+            } catch (error) {
+                console.error('Error fetching friend list:', error);
+            }
+        };
+        fetchFriendList();
+    }, [user]);
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -55,16 +83,33 @@ const ChatAddPage = () => {
         ));
     };
 
-    //채팅방 생성(작동)
     const handleCreateChatRoom = async () => {
+        const selectedProfiles = profiles.filter(profile => profile.isChecked);
+        const userIds = selectedProfiles.map(profile => profile.id.toString());
+        const userNames = selectedProfiles.map(profile => profile.name);
+
+        // 현재 사용자의 ID와 이름을 추가
+        if (user && user.userId) {
+            userIds.push(user.userId.toString());
+            userNames.push(user.name);
+        }
+
+        const roomName = userNames.join(',');
+
+        console.log('Selected profiles:', selectedProfiles);
+        console.log('User IDs:', userIds);
+        console.log('Room Name:', roomName);
+
         try {
             const response = await createChatRoomMutation.mutateAsync({
-                roomName: "testroom",
-                userId: ["mkjack310"]
+                roomName: roomName,
+                userId: userIds
             });
-            alert(response);
+            console.log('Chat room creation response:', response);
+            alert(response.data.message);
             navigation.navigate('ChatListPage', { refresh: true });
         } catch (error) {
+            console.error('Error creating chat room:', error);
             alert("채팅방 생성 오류");
         }
     }

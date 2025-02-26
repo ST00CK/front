@@ -4,20 +4,20 @@ import { useNavigation } from '@react-navigation/native';
 
 interface ChatRoomProps {
     name: string;
-    messages: { id: number; name: string; message: string; time: string; imageUrl: string; roomId: string }[];
+    messages: { id: number; name: string; message: string; time: string; imageUrl: string; roomId: string; userId: string }[];
 }
 
 const ChatRoom: React.FC<ChatRoomProps> = ({ name, messages }) => {
     const navigation = useNavigation();
 
-    const handlePress = (name: string, roomId: string) => {
-        navigation.navigate('ChatRoomPage', { name, roomId });
+    const handlePress = (name: string, roomId: string, userId: string) => {
+        navigation.navigate('ChatRoomPage', { name, roomId, userId });
     };
 
     return (
         <ScrollView style={styles.container}>
             {messages.map((msg) => (
-                <TouchableOpacity key={msg.id} style={styles.messageContainer} onPress={() => handlePress(msg.name, msg.roomId)}>
+                <TouchableOpacity key={msg.id} style={styles.messageContainer} onPress={() => handlePress(msg.name, msg.roomId, msg.userId)}>
                     <Image source={{ uri: msg.imageUrl }} style={styles.profileImage} />
                     <View style={styles.messageContent}>
                         <Text style={styles.name}>{msg.name}</Text>
