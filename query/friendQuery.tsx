@@ -1,7 +1,9 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { fetchUserById } from './userQuery';
 
-const API_URL = process.env.EXPO_PUBLIC_STOOCK_FRIEND_API_URL
+
+const API_URL = `${process.env.EXPO_PUBLIC_STOOCK_API_URL}/friend`;
 
 interface FriendData{
     User1ID:string,
@@ -9,7 +11,7 @@ interface FriendData{
 }
 
 //친구추가
-export const useFriendShipCreateMutation = (): UseMutationResult<string, unknown, FriendData , unknown> =>{
+export const useFriendShipCreateMutation = (): UseMutationResult<AxiosResponse, unknown, FriendData , unknown> =>{
     return useMutation({
         mutationFn: async(friendData:FriendData) => {
             const response = await axios.post(`${API_URL}/friendship/create`,
@@ -24,7 +26,7 @@ export const useFriendShipCreateMutation = (): UseMutationResult<string, unknown
 }
 
 //친구삭제
-export const useFriendShipDeleteMutation = (): UseMutationResult<string, unknown, FriendData , unknown> =>{
+export const useFriendShipDeleteMutation = (): UseMutationResult<AxiosResponse, unknown, FriendData , unknown> =>{
     return useMutation({
         mutationFn: async(friendData:FriendData) => {
             const response = await axios.post(`${API_URL}/friendship/delete`,
@@ -39,7 +41,7 @@ export const useFriendShipDeleteMutation = (): UseMutationResult<string, unknown
 }
 
 //리스트 가져오기
-export const useFriendShipListMutation = (): UseMutationResult<TransformedUser|string, unknown, string , unknown> =>{
+export const useFriendShipListMutation = (): UseMutationResult<TransformedUser[]|string, unknown, string , unknown> =>{
     return useMutation({
         mutationFn: async(userID) => {
             const response = await axios.get(`${API_URL}/friendship/list`,{
@@ -58,7 +60,7 @@ export const useFriendShipListMutation = (): UseMutationResult<TransformedUser|s
 
         console.log("ori: " + JSON.stringify(originalData));
 
-        const transformedData: TransformedUser[] = originalData.map(transformUser);
+        const transformedData: TransformedUser[] = await Promise.all(originalData.map(transformUser));
         console.log(transformedData);
         return transformedData;
         },
@@ -81,15 +83,16 @@ interface ServerUserData {
 
   // 변환 후 사용할 데이터 타입
 interface TransformedUser {
-    id: number;
+    id: string;
     name: string;
     imageUrl: string;
   }
 
-  function transformUser(data: ServerUserData): TransformedUser {
+  async function transformUser(data: ServerUserData): Promise<TransformedUser> {
+    const user = await fetchUserById(data.Props.id);
     return {
-      id: data!.Id,
-      name: data!.Props.id, 
-      imageUrl: data!.Props.profile,
+        id: data.Props.id,
+        name: user.name,
+        imageUrl: data.Props.profile,
     };
-  }
+}

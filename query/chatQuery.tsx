@@ -34,6 +34,33 @@ export const useChatRoomListMutation = (): UseMutationResult<MutationResult, unk
     })
 }
 
+// 채팅방 멤버 데이터 타입
+interface RoomMembersData {
+    roomId: string;
+}
+
+// 채팅방 멤버 응답 타입
+interface RoomMembersResponse {
+    userId: string[];
+}
+
+// 채팅방 멤버 조회
+export const useChatRoomMembersMutation = (): UseMutationResult<RoomMembersResponse, unknown, RoomMembersData, unknown> => {
+    return useMutation({
+        mutationFn: async({ roomId }) => {
+            const response = await axios.get(`${API_URL}/api/chatroom/members`, {
+                params: { roomId },
+            });
+            console.log('API response:', response.data); // API 응답을 콘솔에 출력하여 확인
+            const userIds = response.data.map((member: { user_id: string }) => member.user_id);
+            return { userId: userIds };
+        },
+        onSuccess(data) {
+            console.log('Mutation success data:', data); // 성공 시 데이터를 콘솔에 출력하여 확인
+        }
+    });
+}
+
 //채팅방 생성 요청 타입
 interface CreateChatRoom{
     roomName:string,

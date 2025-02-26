@@ -10,11 +10,13 @@ import ExitIcon from '../components/stoock/ChatRoom/ExitIcon';
 import ChatSetting from '../components/stoock/ChatRoom/ChatSetting';
 import { FontAwesome } from '@expo/vector-icons';
 import styles from '../styles/ChatRoomPageStyles';
-import { useDeleteRoomMutation } from '../query/chatQuery';
+import { useDeleteRoomMutation, useChatRoomLogMutation } from '../query/chatQuery';
 import { useUserStore } from '@/store/useUserStore';
+import { useChatRoomMembersMutation } from '@/query/chatQuery';
+import { fetchUserById, User } from '@/query/userQuery';
 
 type RootStackParamList = {
-    ChatRoomPage: { name: string; roomId: string };
+    ChatRoomPage: { name: string; roomId: string; userId: string };
     ChatListPage: { refresh?: boolean };
 };
 
@@ -22,67 +24,79 @@ type ChatRoomPageRouteProp = RouteProp<RootStackParamList, 'ChatRoomPage'>;
 
 const ChatRoomPage = () => {
     const route = useRoute<ChatRoomPageRouteProp>();
-    const { name, roomId } = route.params;
+    const { name, roomId, userId } = route.params;
     const navigation = useNavigation();
     const { user } = useUserStore();
 
-    useEffect(() => {
-        console.log('User:', user);
-        console.log('Room ID:', roomId);
-    }, [user, roomId]);
-
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            profileImage: 'https://placehold.co/50',
-            name: 'Ryan Reynolds',
-            message: 'Hello!',
-            time: '2023-10-01T10:00:00',
-            isUserMessage: false,
-        },
-        {
-            id: 2,
-            profileImage: 'https://placehold.co/50',
-            name: 'Chris Evans',
-            message: 'Hi there!',
-            time: '2023-10-01T10:01:00',
-            isUserMessage: false,
-        },
-        {
-            id: 3,
-            profileImage: 'https://placehold.co/50',
-            name: 'Scarlett Johansson',
-            message: 'How are you?',
-            time: '2023-10-01T10:02:00',
-            isUserMessage: false,
-        },
-        {
-            id: 4,
-            profileImage: 'https://placehold.co/50',
-            name: 'Robert Downey Jr.',
-            message: 'Good morning!',
-            time: '2023-10-01T10:03:00',
-            isUserMessage: false,
-        },
-        {
-            id: 5,
-            profileImage: 'https://placehold.co/50',
-            name: 'Robert Downey Jr.',
-            message: 'Good morning!',
-            time: '2023-10-01T10:03:00',
-            isUserMessage: false,
-        },
-    ]);
+    const chatRoomMembersMutation = useChatRoomMembersMutation();
+    const chatRoomLogMutation = useChatRoomLogMutation();
+    const [participants, setParticipants] = useState<User[]>([]);
+    interface Message {
+        id: number;
+        profileImage: string;
+        name: string;
+        message: string;
+        time: string;
+        isUserMessage: boolean;
+        userId: string;
+    }
+    
+    const [messages, setMessages] = useState<Message[]>([]);
     const [filteredMessages, setFilteredMessages] = useState(messages);
     const [showInput, setShowInput] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [isPanelVisible, setIsPanelVisible] = useState(false);
     const [isSettingVisible, setIsSettingVisible] = useState(false);
+    const [roomName, setRoomName] = useState(name);
     const slideAnim = useRef(new Animated.Value(0)).current;
     const panelAnim = useRef(new Animated.Value(0)).current;
     const overlayOpacity = useRef(new Animated.Value(0)).current;
 
     const deleteRoomMutation = useDeleteRoomMutation();
+
+    useEffect(() => {
+        const fetchChatRoomMembers = async () => {
+            try {
+                const response = await chatRoomMembersMutation.mutateAsync({ roomId });
+                console.log(`Room ID: ${roomId}, Members:`, response.userId);
+                const userIds = response.userId || [];
+                const users = await Promise.all(userIds.map(async (userId) => {
+                    const user = await fetchUserById(userId);
+                    console.log('Fetched user:', user); // 사용자 정보를 콘솔에 출력하여 확인
+                    return {
+                        ...user,
+                        profileImage: user.file, // file 필드를 profileImage로 매핑
+                    };
+                }));
+                setParticipants(users);
+            } catch (error) {
+                console.error('Error fetching chat room members:', error);
+            }
+        };
+
+        const fetchChatRoomLog = async () => {
+            try {
+                const response = await chatRoomLogMutation.mutateAsync({ room_Id: roomId });
+                console.log('Chat room log response:', response);
+                const messages: Message[] = Array.isArray(response) ? response.map((msg: any) => ({
+                    id: msg.id,
+                    profileImage: msg.profileImage,
+                    name: msg.name,
+                    message: msg.message,
+                    time: msg.time,
+                    isUserMessage: msg.isUserMessage,
+                    userId: msg.userId,
+                })) : [];
+                setMessages(messages);
+                setFilteredMessages(messages);
+            } catch (error) {
+                console.error('Error fetching chat room log:', error);
+            }
+        };
+
+        fetchChatRoomMembers();
+        fetchChatRoomLog();
+    }, [roomId]);
 
     const handleShowInput = () => {
         setShowInput(prevShowInput => !prevShowInput);
@@ -110,6 +124,7 @@ const ChatRoomPage = () => {
             message: message,
             time: new Date().toISOString(),
             isUserMessage: true,
+            userId: user?.userId || '',
         };
         setMessages([...messages, newMessage]);
         setFilteredMessages([...messages, newMessage]);
@@ -153,6 +168,10 @@ const ChatRoomPage = () => {
         setIsSettingVisible(false);
     };
 
+    const handleRoomNameUpdate = (newName: string) => {
+        setRoomName(newName);
+    };
+
     const slideDown = slideAnim.interpolate({
         inputRange: [0, 1],
         outputRange: [-50, 0],
@@ -173,11 +192,6 @@ const ChatRoomPage = () => {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     };
 
-    // 중복된 프로필 이름 제거
-    const uniqueProfiles = Array.from(new Set(messages.map(msg => msg.name)))
-        .map(name => messages.find(msg => msg.name === name))
-        .filter(profile => profile !== undefined);
-
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -186,7 +200,7 @@ const ChatRoomPage = () => {
             <View style={styles.header}>
                 {!showInput ? (
                     <>
-                        <Text style={styles.chatRoomName}>{name}</Text>
+                        <Text style={styles.chatRoomName}>{roomName}</Text>
                         <View style={styles.iconContainer}>
                             <SearchIcon onPress={handleShowInput} />
                             <ListIcon onPress={togglePanel} />
@@ -205,8 +219,8 @@ const ChatRoomPage = () => {
             </View>
             <ScrollView style={styles.messagesContainer}>
                 {filteredMessages.map((msg, index) => {
-                    const showProfileImage = index === 0 || filteredMessages[index - 1].name !== msg.name;
-                    const showName = index === 0 || filteredMessages[index - 1].name !== msg.name;
+                    const showProfileImage = index === 0 || filteredMessages[index - 1].userId !== msg.userId;
+                    const showName = index === 0 || filteredMessages[index - 1].userId !== msg.userId;
                     const showTime = index === filteredMessages.length - 1 || new Date(filteredMessages[index + 1].time).getMinutes() !== new Date(msg.time).getMinutes();
                     return (
                         <Chat
@@ -236,11 +250,11 @@ const ChatRoomPage = () => {
                 <Animated.View style={[styles.panel, { transform: [{ translateX: panelTranslateX }] }]}>
                     <Text style={styles.panelTitle}>Participants</Text>
                     <ScrollView>
-                        {uniqueProfiles.map((profile, index) => (
+                        {participants.map((participant, index) => (
                             <Profile
                                 key={index}
-                                name={profile?.name || ''}
-                                imageUrl={profile?.profileImage || ''}
+                                name={participant.name}
+                                imageUrl={participant.profileImage}
                                 imageSize={40}
                                 textSize={14}
                             />
@@ -258,11 +272,13 @@ const ChatRoomPage = () => {
                 isVisible={isSettingVisible}
                 onClose={handleSettingClose}
                 roomId={roomId}
-                roomName={name}
-                participants={uniqueProfiles.map(profile => ({
-                    name: profile?.name || '',
-                    profileImage: profile?.profileImage || '',
+                roomName={roomName}
+                participants={participants.map(participant => ({
+                    name: participant.name,
+                    profileImage: participant.profileImage,
                 }))}
+                onRoomNameUpdate={handleRoomNameUpdate}
+                handleExit={handleExit}
             />
         </KeyboardAvoidingView>
     );

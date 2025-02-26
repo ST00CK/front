@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ScrollView, Modal, TextInput, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { useDeleteRoomMutation } from '@/query/chatQuery';
-import Profile from '../Common/Profile';
+import { useChatRoomUpdateMutation } from '@/query/chatQuery';
 
 interface ChatSettingProps {
     isVisible: boolean;
@@ -10,13 +9,15 @@ interface ChatSettingProps {
     roomId: string;
     roomName: string;
     participants: { name: string; profileImage: string }[];
+    onRoomNameUpdate: (newName: string) => void;
+    handleExit: () => void;
 }
 
-const ChatSetting: React.FC<ChatSettingProps> = ({ isVisible, onClose, roomId, roomName, participants }) => {
+const ChatSetting: React.FC<ChatSettingProps> = ({ isVisible, onClose, roomId, roomName, participants, onRoomNameUpdate, handleExit }) => {
     const panelAnim = useRef(new Animated.Value(0)).current;
     const [newRoomName, setNewRoomName] = useState(roomName);
     const [isModified, setIsModified] = useState(false);
-    const deleteRoomMutation = useDeleteRoomMutation();
+    const updateRoomMutation = useChatRoomUpdateMutation();
 
     useEffect(() => {
         Animated.timing(panelAnim, {
@@ -43,18 +44,18 @@ const ChatSetting: React.FC<ChatSettingProps> = ({ isVisible, onClose, roomId, r
 
     const handleSave = () => {
         if (isModified) {
-            // 채팅방 이름 수정 로직 추가
-            console.log('채팅방 이름 수정:', newRoomName);
-            setIsModified(false);
+            updateRoomMutation.mutate({ roomId, roomName: newRoomName }, {
+                onSuccess: () => {
+                    setIsModified(false);
+                    onRoomNameUpdate(newRoomName);
+                },
+            });
         }
     };
 
-    const handleExitRoom = () => {
-        deleteRoomMutation.mutate({ roomId }, {
-            onSuccess: () => {
-                onClose();
-            },
-        });
+    const handleExitAndClose = () => {
+        handleExit();
+        onClose();
     };
 
     return (
@@ -75,33 +76,35 @@ const ChatSetting: React.FC<ChatSettingProps> = ({ isVisible, onClose, roomId, r
                     </TouchableOpacity>
                 </View>
                 <ScrollView contentContainerStyle={styles.content}>
-                    <View style={styles.participantsContainer}>
-                        {participants.map((participant, index) => (
-                            <Profile
-                                key={index}
-                                name={participant.name}
-                                imageUrl={participant.profileImage}
-                                imageSize={50}
-                                textSize={14}
+                    <View style={styles.participantsAndRoomNameContainer}>
+                        <View style={styles.participantsContainer}>
+                            <View style={styles.participantGrid}>
+                                {participants.slice(0, 4).map((participant, index) => (
+                                    <Image
+                                        key={index}
+                                        source={{ uri: participant.profileImage }}
+                                        style={styles.participantImage}
+                                    />
+                                ))}
+                            </View>
+                        </View>
+                        <View style={styles.roomNameContainer}>
+                            <Text style={styles.label}>채팅방 이름</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={newRoomName}
+                                onChangeText={handleRoomNameChange}
                             />
-                        ))}
+                            <TouchableOpacity
+                                style={[styles.saveButton, isModified && styles.saveButtonActive]}
+                                onPress={handleSave}
+                                disabled={!isModified}
+                            >
+                                <Text style={styles.saveButtonText}>확인</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.roomNameContainer}>
-                        <Text style={styles.label}>채팅방 이름</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={newRoomName}
-                            onChangeText={handleRoomNameChange}
-                        />
-                        <TouchableOpacity
-                            style={[styles.saveButton, isModified && styles.saveButtonActive]}
-                            onPress={handleSave}
-                            disabled={!isModified}
-                        >
-                            <Text style={styles.saveButtonText}>확인</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity style={styles.exitButton} onPress={handleExitRoom}>
+                    <TouchableOpacity style={styles.exitButton} onPress={handleExitAndClose}>
                         <Text style={styles.exitButtonText}>채팅방 나가기</Text>
                     </TouchableOpacity>
                 </ScrollView>
@@ -144,13 +147,25 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'space-between',
     },
-    participantsContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
+    participantsAndRoomNameContainer: {
         marginBottom: 20,
     },
+    participantsContainer: {
+        alignItems: 'center',
+    },
+    participantGrid: {
+        width: 100,
+        height: 100,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+    participantImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+    },
     roomNameContainer: {
-        marginBottom: 20,
+        flex: 1,
     },
     label: {
         fontSize: 16,
